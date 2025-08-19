@@ -1,0 +1,3261 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: capi-webhook-system/capc-webhook-service
+    controller-gen.kubebuilder.io/version: v0.16.5
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-cloudstack
+    cluster.x-k8s.io/v1beta1: v1beta1_v1beta2_v1beta3
+  name: cloudstackaffinitygroups.infrastructure.cluster.x-k8s.io
+spec:
+  conversion:
+    strategy: Webhook
+    webhook:
+      clientConfig:
+        service:
+          name: capc-webhook-service
+          namespace: capi-webhook-system
+          path: /convert
+      conversionReviewVersions:
+      - v1
+  group: infrastructure.cluster.x-k8s.io
+  names:
+    kind: CloudStackAffinityGroup
+    listKind: CloudStackAffinityGroupList
+    plural: cloudstackaffinitygroups
+    singular: cloudstackaffinitygroup
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: CloudStackAffinityGroup is the Schema for the cloudstackaffinitygroups
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackAffinityGroupSpec defines the desired state of
+              CloudStackAffinityGroup
+            properties:
+              id:
+                description: ID.
+                type: string
+              name:
+                description: Name.
+                type: string
+              type:
+                description: |-
+                  Mutually exclusive parameter with AffinityGroupIDs.
+                  Can be "host affinity" or "host anti-affinity". Will create an affinity group per machine set.
+                type: string
+            type: object
+          status:
+            description: CloudStackAffinityGroupStatus defines the observed state
+              of CloudStackAffinityGroup
+            properties:
+              ready:
+                description: Reflects the readiness of the CS Affinity Group.
+                type: boolean
+            required:
+            - ready
+            type: object
+        type: object
+    served: true
+    storage: false
+    subresources:
+      status: {}
+  - name: v1beta2
+    schema:
+      openAPIV3Schema:
+        description: CloudStackAffinityGroup is the Schema for the cloudstackaffinitygroups
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackAffinityGroupSpec defines the desired state of
+              CloudStackAffinityGroup
+            properties:
+              failureDomainName:
+                description: FailureDomainName -- the name of the FailureDomain the
+                  machine is placed in.
+                type: string
+              id:
+                description: ID.
+                type: string
+              name:
+                description: Name.
+                type: string
+              type:
+                description: |-
+                  Mutually exclusive parameter with AffinityGroupIDs.
+                  Can be "host affinity" or "host anti-affinity". Will create an affinity group per machine set.
+                type: string
+            type: object
+          status:
+            description: CloudStackAffinityGroupStatus defines the observed state
+              of CloudStackAffinityGroup
+            properties:
+              ready:
+                description: Reflects the readiness of the CS Affinity Group.
+                type: boolean
+            required:
+            - ready
+            type: object
+        type: object
+    served: true
+    storage: false
+    subresources:
+      status: {}
+  - name: v1beta3
+    schema:
+      openAPIV3Schema:
+        description: CloudStackAffinityGroup is the Schema for the cloudstackaffinitygroups
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackAffinityGroupSpec defines the desired state of
+              CloudStackAffinityGroup
+            properties:
+              failureDomainName:
+                description: FailureDomainName -- the name of the FailureDomain the
+                  machine is placed in.
+                type: string
+              id:
+                description: ID.
+                type: string
+              name:
+                description: Name.
+                type: string
+              type:
+                description: |-
+                  Mutually exclusive parameter with AffinityGroupIDs.
+                  Can be "host affinity" or "host anti-affinity". Will create an affinity group per machine set.
+                type: string
+            type: object
+          status:
+            description: CloudStackAffinityGroupStatus defines the observed state
+              of CloudStackAffinityGroup
+            properties:
+              ready:
+                description: Reflects the readiness of the CS Affinity Group.
+                type: boolean
+            required:
+            - ready
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: capi-webhook-system/capc-webhook-service
+    controller-gen.kubebuilder.io/version: v0.16.5
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-cloudstack
+    cluster.x-k8s.io/v1beta1: v1beta1_v1beta2_v1beta3
+  name: cloudstackclusters.infrastructure.cluster.x-k8s.io
+spec:
+  conversion:
+    strategy: Webhook
+    webhook:
+      clientConfig:
+        service:
+          name: capc-webhook-service
+          namespace: capi-webhook-system
+          path: /convert
+      conversionReviewVersions:
+      - v1
+  group: infrastructure.cluster.x-k8s.io
+  names:
+    kind: CloudStackCluster
+    listKind: CloudStackClusterList
+    plural: cloudstackclusters
+    singular: cloudstackcluster
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: CloudStackCluster is the Schema for the cloudstackclusters API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackClusterSpec defines the desired state of CloudStackCluster.
+            properties:
+              account:
+                description: CloudStack account.
+                type: string
+              controlPlaneEndpoint:
+                description: The kubernetes control plane endpoint.
+                properties:
+                  host:
+                    description: The hostname on which the API server is serving.
+                    type: string
+                  port:
+                    description: The port on which the API server is serving.
+                    format: int32
+                    type: integer
+                required:
+                - host
+                - port
+                type: object
+              domain:
+                description: CloudStack domain.
+                type: string
+              identityRef:
+                description: |-
+                  CloudStackIdentityReference is a reference to an infrastructure
+                  provider identity to be used to provision cluster resources.
+                properties:
+                  kind:
+                    description: |-
+                      Kind of the identity. Must be supported by the infrastructure provider
+                      and may be either cluster or namespace-scoped.
+                    minLength: 1
+                    type: string
+                  name:
+                    description: Name of the infrastructure identity to be used.
+                    type: string
+                required:
+                - kind
+                - name
+                type: object
+              zones:
+                items:
+                  properties:
+                    id:
+                      description: ID.
+                      type: string
+                    name:
+                      description: Name.
+                      type: string
+                    network:
+                      description: The network within the Zone to use.
+                      properties:
+                        id:
+                          description: Cloudstack Network ID the cluster is built
+                            in.
+                          type: string
+                        name:
+                          description: Cloudstack Network Name the cluster is built
+                            in.
+                          type: string
+                        type:
+                          description: Cloudstack Network Type the cluster is built
+                            in.
+                          type: string
+                      type: object
+                  required:
+                  - network
+                  type: object
+                type: array
+            required:
+            - controlPlaneEndpoint
+            - zones
+            type: object
+          status:
+            description: The actual cluster state reported by CloudStack.
+            properties:
+              domainID:
+                description: Cloudstack Domain ID the cluster is built in.
+                type: string
+              failureDomains:
+                additionalProperties:
+                  description: |-
+                    FailureDomainSpec is the Schema for Cluster API failure domains.
+                    It allows controllers to understand how many failure domains a cluster can optionally span across.
+                  properties:
+                    attributes:
+                      additionalProperties:
+                        type: string
+                      description: attributes is a free form map of attributes an
+                        infrastructure provider might use or require.
+                      type: object
+                    controlPlane:
+                      description: controlPlane determines if this failure domain
+                        is suitable for use by control plane machines.
+                      type: boolean
+                  type: object
+                description: |-
+                  CAPI recognizes failure domains as a method to spread machines.
+                  CAPC sets failure domains to indicate functioning Zones.
+                type: object
+              loadBalancerRuleID:
+                description: The ID of the lb rule used to assign VMs to the lb.
+                type: string
+              publicIPID:
+                description: The CS public IP ID to use for the k8s endpoint.
+                type: string
+              publicIPNetworkID:
+                description: The ID of the network the PublicIP is in.
+                type: string
+              ready:
+                description: Reflects the readiness of the CS cluster.
+                type: boolean
+              zones:
+                additionalProperties:
+                  properties:
+                    id:
+                      description: ID.
+                      type: string
+                    name:
+                      description: Name.
+                      type: string
+                    network:
+                      description: The network within the Zone to use.
+                      properties:
+                        id:
+                          description: Cloudstack Network ID the cluster is built
+                            in.
+                          type: string
+                        name:
+                          description: Cloudstack Network Name the cluster is built
+                            in.
+                          type: string
+                        type:
+                          description: Cloudstack Network Type the cluster is built
+                            in.
+                          type: string
+                      type: object
+                  required:
+                  - network
+                  type: object
+                description: The status of the cluster's ACS Zones.
+                type: object
+            required:
+            - ready
+            type: object
+        type: object
+    served: true
+    storage: false
+    subresources:
+      status: {}
+  - name: v1beta2
+    schema:
+      openAPIV3Schema:
+        description: CloudStackCluster is the Schema for the cloudstackclusters API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackClusterSpec defines the desired state of CloudStackCluster.
+            properties:
+              controlPlaneEndpoint:
+                description: The kubernetes control plane endpoint.
+                properties:
+                  host:
+                    description: The hostname on which the API server is serving.
+                    type: string
+                  port:
+                    description: The port on which the API server is serving.
+                    format: int32
+                    type: integer
+                required:
+                - host
+                - port
+                type: object
+              failureDomains:
+                items:
+                  description: CloudStackFailureDomainSpec defines the desired state
+                    of CloudStackFailureDomain
+                  properties:
+                    account:
+                      description: CloudStack account.
+                      type: string
+                    acsEndpoint:
+                      description: Apache CloudStack Endpoint secret reference.
+                      properties:
+                        name:
+                          description: name is unique within a namespace to reference
+                            a secret resource.
+                          type: string
+                        namespace:
+                          description: namespace defines the space within which the
+                            secret name must be unique.
+                          type: string
+                      type: object
+                      x-kubernetes-map-type: atomic
+                    domain:
+                      description: CloudStack domain.
+                      type: string
+                    name:
+                      description: The failure domain unique name.
+                      type: string
+                    zone:
+                      description: The ACS Zone for this failure domain.
+                      properties:
+                        id:
+                          description: ID.
+                          type: string
+                        name:
+                          description: Name.
+                          type: string
+                        network:
+                          description: The network within the Zone to use.
+                          properties:
+                            id:
+                              description: Cloudstack Network ID the cluster is built
+                                in.
+                              type: string
+                            name:
+                              description: Cloudstack Network Name the cluster is
+                                built in.
+                              type: string
+                            type:
+                              description: Cloudstack Network Type the cluster is
+                                built in.
+                              type: string
+                          required:
+                          - name
+                          type: object
+                      required:
+                      - network
+                      type: object
+                  required:
+                  - acsEndpoint
+                  - name
+                  - zone
+                  type: object
+                type: array
+            required:
+            - controlPlaneEndpoint
+            - failureDomains
+            type: object
+          status:
+            description: The actual cluster state reported by CloudStack.
+            properties:
+              failureDomains:
+                additionalProperties:
+                  description: |-
+                    FailureDomainSpec is the Schema for Cluster API failure domains.
+                    It allows controllers to understand how many failure domains a cluster can optionally span across.
+                  properties:
+                    attributes:
+                      additionalProperties:
+                        type: string
+                      description: attributes is a free form map of attributes an
+                        infrastructure provider might use or require.
+                      type: object
+                    controlPlane:
+                      description: controlPlane determines if this failure domain
+                        is suitable for use by control plane machines.
+                      type: boolean
+                  type: object
+                description: |-
+                  CAPI recognizes failure domains as a method to spread machines.
+                  CAPC sets failure domains to indicate functioning CloudStackFailureDomains.
+                type: object
+              ready:
+                description: Reflects the readiness of the CS cluster.
+                type: boolean
+            required:
+            - ready
+            type: object
+        type: object
+    served: true
+    storage: false
+    subresources:
+      status: {}
+  - name: v1beta3
+    schema:
+      openAPIV3Schema:
+        description: CloudStackCluster is the Schema for the cloudstackclusters API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackClusterSpec defines the desired state of CloudStackCluster.
+            properties:
+              controlPlaneEndpoint:
+                description: The kubernetes control plane endpoint.
+                properties:
+                  host:
+                    description: The hostname on which the API server is serving.
+                    type: string
+                  port:
+                    description: The port on which the API server is serving.
+                    format: int32
+                    type: integer
+                required:
+                - host
+                - port
+                type: object
+              failureDomains:
+                items:
+                  description: CloudStackFailureDomainSpec defines the desired state
+                    of CloudStackFailureDomain
+                  properties:
+                    account:
+                      description: CloudStack account.
+                      type: string
+                    acsEndpoint:
+                      description: Apache CloudStack Endpoint secret reference.
+                      properties:
+                        name:
+                          description: name is unique within a namespace to reference
+                            a secret resource.
+                          type: string
+                        namespace:
+                          description: namespace defines the space within which the
+                            secret name must be unique.
+                          type: string
+                      type: object
+                      x-kubernetes-map-type: atomic
+                    domain:
+                      description: CloudStack domain.
+                      type: string
+                    name:
+                      description: The failure domain unique name.
+                      type: string
+                    project:
+                      description: CloudStack project.
+                      type: string
+                    zone:
+                      description: The ACS Zone for this failure domain.
+                      properties:
+                        id:
+                          description: ID.
+                          type: string
+                        name:
+                          description: Name.
+                          type: string
+                        network:
+                          description: The network within the Zone to use.
+                          properties:
+                            gateway:
+                              description: Cloudstack Network Gateway the cluster
+                                is built in.
+                              type: string
+                            id:
+                              description: Cloudstack Network ID the cluster is built
+                                in.
+                              type: string
+                            name:
+                              description: Cloudstack Network Name the cluster is
+                                built in.
+                              type: string
+                            netmask:
+                              description: Cloudstack Network Netmask the cluster
+                                is built in.
+                              type: string
+                            offering:
+                              description: |-
+                                Cloudstack Network Offering the cluster is built in.
+                                Default is "DefaultIsolatedNetworkOfferingWithSourceNatService" for
+                                isolated networks and "DefaultIsolatedNetworkOfferingForVpcNetworks"
+                                for VPC networks.
+                              type: string
+                            routingMode:
+                              description: |-
+                                Cloudstack Network's routing mode.
+                                Routing mode can be Dynamic, or Static.
+                                Empty value means the network mode is NATTED, not ROUTED.
+                              type: string
+                            type:
+                              description: Cloudstack Network Type the cluster is
+                                built in.
+                              type: string
+                            vpc:
+                              description: Cloudstack VPC the network belongs to.
+                              properties:
+                                cidr:
+                                  description: CIDR for the VPC.
+                                  type: string
+                                id:
+                                  description: Cloudstack VPC ID of the network.
+                                  type: string
+                                name:
+                                  description: Cloudstack VPC Name of the network.
+                                  type: string
+                                offering:
+                                  description: |-
+                                    Cloudstack VPC Offering for the network.
+                                    Default is "Default VPC offering"
+                                  type: string
+                              type: object
+                          required:
+                          - name
+                          type: object
+                      required:
+                      - network
+                      type: object
+                  required:
+                  - acsEndpoint
+                  - name
+                  - zone
+                  type: object
+                type: array
+              syncWithACS:
+                description: SyncWithACS determines if an externalManaged CKS cluster
+                  should be created on ACS.
+                type: boolean
+            required:
+            - controlPlaneEndpoint
+            - failureDomains
+            type: object
+          status:
+            description: The actual cluster state reported by CloudStack.
+            properties:
+              cloudStackClusterId:
+                description: Id of CAPC managed kubernetes cluster created in CloudStack
+                type: string
+              failureDomains:
+                additionalProperties:
+                  description: |-
+                    FailureDomainSpec is the Schema for Cluster API failure domains.
+                    It allows controllers to understand how many failure domains a cluster can optionally span across.
+                  properties:
+                    attributes:
+                      additionalProperties:
+                        type: string
+                      description: attributes is a free form map of attributes an
+                        infrastructure provider might use or require.
+                      type: object
+                    controlPlane:
+                      description: controlPlane determines if this failure domain
+                        is suitable for use by control plane machines.
+                      type: boolean
+                  type: object
+                description: |-
+                  CAPI recognizes failure domains as a method to spread machines.
+                  CAPC sets failure domains to indicate functioning CloudStackFailureDomains.
+                type: object
+              ready:
+                description: Reflects the readiness of the CS cluster.
+                type: boolean
+            required:
+            - ready
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: capi-webhook-system/capc-webhook-service
+    controller-gen.kubebuilder.io/version: v0.16.5
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-cloudstack
+    cluster.x-k8s.io/v1beta1: v1beta1_v1beta2_v1beta3
+  name: cloudstackfailuredomains.infrastructure.cluster.x-k8s.io
+spec:
+  conversion:
+    strategy: Webhook
+    webhook:
+      clientConfig:
+        service:
+          name: capc-webhook-service
+          namespace: capi-webhook-system
+          path: /convert
+      conversionReviewVersions:
+      - v1
+  group: infrastructure.cluster.x-k8s.io
+  names:
+    kind: CloudStackFailureDomain
+    listKind: CloudStackFailureDomainList
+    plural: cloudstackfailuredomains
+    singular: cloudstackfailuredomain
+  scope: Namespaced
+  versions:
+  - name: v1beta2
+    schema:
+      openAPIV3Schema:
+        description: CloudStackFailureDomain is the Schema for the cloudstackfailuredomains
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackFailureDomainSpec defines the desired state of
+              CloudStackFailureDomain
+            properties:
+              account:
+                description: CloudStack account.
+                type: string
+              acsEndpoint:
+                description: Apache CloudStack Endpoint secret reference.
+                properties:
+                  name:
+                    description: name is unique within a namespace to reference a
+                      secret resource.
+                    type: string
+                  namespace:
+                    description: namespace defines the space within which the secret
+                      name must be unique.
+                    type: string
+                type: object
+                x-kubernetes-map-type: atomic
+              domain:
+                description: CloudStack domain.
+                type: string
+              name:
+                description: The failure domain unique name.
+                type: string
+              zone:
+                description: The ACS Zone for this failure domain.
+                properties:
+                  id:
+                    description: ID.
+                    type: string
+                  name:
+                    description: Name.
+                    type: string
+                  network:
+                    description: The network within the Zone to use.
+                    properties:
+                      id:
+                        description: Cloudstack Network ID the cluster is built in.
+                        type: string
+                      name:
+                        description: Cloudstack Network Name the cluster is built
+                          in.
+                        type: string
+                      type:
+                        description: Cloudstack Network Type the cluster is built
+                          in.
+                        type: string
+                    required:
+                    - name
+                    type: object
+                required:
+                - network
+                type: object
+            required:
+            - acsEndpoint
+            - name
+            - zone
+            type: object
+          status:
+            description: CloudStackFailureDomainStatus defines the observed state
+              of CloudStackFailureDomain
+            properties:
+              ready:
+                description: Reflects the readiness of the CloudStack Failure Domain.
+                type: boolean
+            required:
+            - ready
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: false
+    subresources:
+      status: {}
+  - name: v1beta3
+    schema:
+      openAPIV3Schema:
+        description: CloudStackFailureDomain is the Schema for the cloudstackfailuredomains
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackFailureDomainSpec defines the desired state of
+              CloudStackFailureDomain
+            properties:
+              account:
+                description: CloudStack account.
+                type: string
+              acsEndpoint:
+                description: Apache CloudStack Endpoint secret reference.
+                properties:
+                  name:
+                    description: name is unique within a namespace to reference a
+                      secret resource.
+                    type: string
+                  namespace:
+                    description: namespace defines the space within which the secret
+                      name must be unique.
+                    type: string
+                type: object
+                x-kubernetes-map-type: atomic
+              domain:
+                description: CloudStack domain.
+                type: string
+              name:
+                description: The failure domain unique name.
+                type: string
+              project:
+                description: CloudStack project.
+                type: string
+              zone:
+                description: The ACS Zone for this failure domain.
+                properties:
+                  id:
+                    description: ID.
+                    type: string
+                  name:
+                    description: Name.
+                    type: string
+                  network:
+                    description: The network within the Zone to use.
+                    properties:
+                      gateway:
+                        description: Cloudstack Network Gateway the cluster is built
+                          in.
+                        type: string
+                      id:
+                        description: Cloudstack Network ID the cluster is built in.
+                        type: string
+                      name:
+                        description: Cloudstack Network Name the cluster is built
+                          in.
+                        type: string
+                      netmask:
+                        description: Cloudstack Network Netmask the cluster is built
+                          in.
+                        type: string
+                      offering:
+                        description: |-
+                          Cloudstack Network Offering the cluster is built in.
+                          Default is "DefaultIsolatedNetworkOfferingWithSourceNatService" for
+                          isolated networks and "DefaultIsolatedNetworkOfferingForVpcNetworks"
+                          for VPC networks.
+                        type: string
+                      routingMode:
+                        description: |-
+                          Cloudstack Network's routing mode.
+                          Routing mode can be Dynamic, or Static.
+                          Empty value means the network mode is NATTED, not ROUTED.
+                        type: string
+                      type:
+                        description: Cloudstack Network Type the cluster is built
+                          in.
+                        type: string
+                      vpc:
+                        description: Cloudstack VPC the network belongs to.
+                        properties:
+                          cidr:
+                            description: CIDR for the VPC.
+                            type: string
+                          id:
+                            description: Cloudstack VPC ID of the network.
+                            type: string
+                          name:
+                            description: Cloudstack VPC Name of the network.
+                            type: string
+                          offering:
+                            description: |-
+                              Cloudstack VPC Offering for the network.
+                              Default is "Default VPC offering"
+                            type: string
+                        type: object
+                    required:
+                    - name
+                    type: object
+                required:
+                - network
+                type: object
+            required:
+            - acsEndpoint
+            - name
+            - zone
+            type: object
+          status:
+            description: CloudStackFailureDomainStatus defines the observed state
+              of CloudStackFailureDomain
+            properties:
+              ready:
+                description: Reflects the readiness of the CloudStack Failure Domain.
+                type: boolean
+            required:
+            - ready
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: capi-webhook-system/capc-webhook-service
+    controller-gen.kubebuilder.io/version: v0.16.5
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-cloudstack
+    cluster.x-k8s.io/v1beta1: v1beta1_v1beta2_v1beta3
+  name: cloudstackisolatednetworks.infrastructure.cluster.x-k8s.io
+spec:
+  conversion:
+    strategy: Webhook
+    webhook:
+      clientConfig:
+        service:
+          name: capc-webhook-service
+          namespace: capi-webhook-system
+          path: /convert
+      conversionReviewVersions:
+      - v1
+  group: infrastructure.cluster.x-k8s.io
+  names:
+    kind: CloudStackIsolatedNetwork
+    listKind: CloudStackIsolatedNetworkList
+    plural: cloudstackisolatednetworks
+    singular: cloudstackisolatednetwork
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: CloudStackIsolatedNetwork is the Schema for the cloudstackisolatednetworks
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackIsolatedNetworkSpec defines the desired state of
+              CloudStackIsolatedNetwork
+            properties:
+              controlPlaneEndpoint:
+                description: The kubernetes control plane endpoint.
+                properties:
+                  host:
+                    description: The hostname on which the API server is serving.
+                    type: string
+                  port:
+                    description: The port on which the API server is serving.
+                    format: int32
+                    type: integer
+                required:
+                - host
+                - port
+                type: object
+              id:
+                description: ID.
+                type: string
+              name:
+                description: Name.
+                type: string
+            required:
+            - controlPlaneEndpoint
+            type: object
+          status:
+            description: CloudStackIsolatedNetworkStatus defines the observed state
+              of CloudStackIsolatedNetwork
+            properties:
+              loadBalancerRuleID:
+                description: The ID of the lb rule used to assign VMs to the lb.
+                type: string
+              publicIPID:
+                description: The CS public IP ID to use for the k8s endpoint.
+                type: string
+              ready:
+                description: Ready indicates the readiness of this provider resource.
+                type: boolean
+            required:
+            - ready
+            type: object
+        type: object
+    served: true
+    storage: false
+    subresources:
+      status: {}
+  - name: v1beta2
+    schema:
+      openAPIV3Schema:
+        description: CloudStackIsolatedNetwork is the Schema for the cloudstackisolatednetworks
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackIsolatedNetworkSpec defines the desired state of
+              CloudStackIsolatedNetwork
+            properties:
+              controlPlaneEndpoint:
+                description: The kubernetes control plane endpoint.
+                properties:
+                  host:
+                    description: The hostname on which the API server is serving.
+                    type: string
+                  port:
+                    description: The port on which the API server is serving.
+                    format: int32
+                    type: integer
+                required:
+                - host
+                - port
+                type: object
+              failureDomainName:
+                description: FailureDomainName -- the FailureDomain the network is
+                  placed in.
+                type: string
+              id:
+                description: ID.
+                type: string
+              name:
+                description: Name.
+                type: string
+            required:
+            - controlPlaneEndpoint
+            - failureDomainName
+            type: object
+          status:
+            description: CloudStackIsolatedNetworkStatus defines the observed state
+              of CloudStackIsolatedNetwork
+            properties:
+              loadBalancerRuleID:
+                description: The ID of the lb rule used to assign VMs to the lb.
+                type: string
+              publicIPID:
+                description: The CS public IP ID to use for the k8s endpoint.
+                type: string
+              ready:
+                description: Ready indicates the readiness of this provider resource.
+                type: boolean
+            required:
+            - ready
+            type: object
+        type: object
+    served: true
+    storage: false
+    subresources:
+      status: {}
+  - name: v1beta3
+    schema:
+      openAPIV3Schema:
+        description: CloudStackIsolatedNetwork is the Schema for the cloudstackisolatednetworks
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackIsolatedNetworkSpec defines the desired state of
+              CloudStackIsolatedNetwork
+            properties:
+              controlPlaneEndpoint:
+                description: The kubernetes control plane endpoint.
+                properties:
+                  host:
+                    description: The hostname on which the API server is serving.
+                    type: string
+                  port:
+                    description: The port on which the API server is serving.
+                    format: int32
+                    type: integer
+                required:
+                - host
+                - port
+                type: object
+              failureDomainName:
+                description: FailureDomainName -- the FailureDomain the network is
+                  placed in.
+                type: string
+              gateway:
+                description: Gateway for the network.
+                type: string
+              id:
+                description: ID.
+                type: string
+              name:
+                description: Name.
+                type: string
+              netmask:
+                description: Netmask for the network.
+                type: string
+              offering:
+                description: |-
+                  Offering for the network.
+                  Default is "DefaultIsolatedNetworkOfferingWithSourceNatService" for
+                  isolated networks and "DefaultIsolatedNetworkOfferingForVpcNetworks"
+                  for VPC networks.
+                type: string
+              vpc:
+                description: VPC the network belongs to.
+                properties:
+                  cidr:
+                    description: CIDR for the VPC.
+                    type: string
+                  id:
+                    description: Cloudstack VPC ID of the network.
+                    type: string
+                  name:
+                    description: Cloudstack VPC Name of the network.
+                    type: string
+                  offering:
+                    description: |-
+                      Cloudstack VPC Offering for the network.
+                      Default is "Default VPC offering"
+                    type: string
+                type: object
+            required:
+            - controlPlaneEndpoint
+            - failureDomainName
+            type: object
+          status:
+            description: CloudStackIsolatedNetworkStatus defines the observed state
+              of CloudStackIsolatedNetwork
+            properties:
+              loadBalancerRuleID:
+                description: The ID of the lb rule used to assign VMs to the lb.
+                type: string
+              publicIPID:
+                description: The CS public IP ID to use for the k8s endpoint.
+                type: string
+              ready:
+                description: Ready indicates the readiness of this provider resource.
+                type: boolean
+              routingMode:
+                description: |-
+                  Routing mode of the network.
+                  Routing mode can be Dynamic, or Static.
+                  Empty value means the network mode is NATTED, not ROUTED.
+                type: string
+            required:
+            - ready
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: capi-webhook-system/capc-webhook-service
+    controller-gen.kubebuilder.io/version: v0.16.5
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-cloudstack
+    cluster.x-k8s.io/v1beta1: v1beta1_v1beta2_v1beta3
+  name: cloudstackmachines.infrastructure.cluster.x-k8s.io
+spec:
+  conversion:
+    strategy: Webhook
+    webhook:
+      clientConfig:
+        service:
+          name: capc-webhook-service
+          namespace: capi-webhook-system
+          path: /convert
+      conversionReviewVersions:
+      - v1
+  group: infrastructure.cluster.x-k8s.io
+  names:
+    categories:
+    - cluster-api
+    kind: CloudStackMachine
+    listKind: CloudStackMachineList
+    plural: cloudstackmachines
+    shortNames:
+    - csm
+    singular: cloudstackmachine
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - description: Cluster to which this CloudStackMachine belongs
+      jsonPath: .metadata.labels.cluster\.x-k8s\.io/cluster-name
+      name: Cluster
+      type: string
+    - description: CloudStack instance state
+      jsonPath: .status.instanceState
+      name: InstanceState
+      type: string
+    - description: Machine ready status
+      jsonPath: .status.ready
+      name: Ready
+      type: string
+    - description: CloudStack instance ID
+      jsonPath: .spec.providerID
+      name: ProviderID
+      type: string
+    - description: Machine object which owns with this CloudStackMachine
+      jsonPath: .metadata.ownerReferences[?(@.kind=="Machine")].name
+      name: Machine
+      type: string
+    name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: CloudStackMachine is the Schema for the cloudstackmachines API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackMachineSpec defines the desired state of CloudStackMachine
+            properties:
+              affinity:
+                description: |-
+                  Mutually exclusive parameter with AffinityGroupIDs.
+                  Defaults to `no`. Can be `pro` or `anti`. Will create an affinity group per machine set.
+                type: string
+              affinitygroupids:
+                description: Optional affinitygroupids for deployVirtualMachine
+                items:
+                  type: string
+                type: array
+              cloudstackaffinityref:
+                description: |-
+                  Mutually exclusive parameter with AffinityGroupIDs.
+                  Is a reference to a CloudStack affiniity group CRD.
+                properties:
+                  apiVersion:
+                    description: API version of the referent.
+                    type: string
+                  fieldPath:
+                    description: |-
+                      If referring to a piece of an object instead of an entire object, this string
+                      should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                      For example, if the object reference is to a container within a pod, this would take on a value like:
+                      "spec.containers{name}" (where "name" refers to the name of the container that triggered
+                      the event) or if no container name is specified "spec.containers[2]" (container with
+                      index 2 in this pod). This syntax is chosen only to have some well-defined way of
+                      referencing a part of an object.
+                    type: string
+                  kind:
+                    description: |-
+                      Kind of the referent.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+                    type: string
+                  name:
+                    description: |-
+                      Name of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                    type: string
+                  namespace:
+                    description: |-
+                      Namespace of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+                    type: string
+                  resourceVersion:
+                    description: |-
+                      Specific resourceVersion to which this reference is made, if any.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+                    type: string
+                  uid:
+                    description: |-
+                      UID of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+                    type: string
+                type: object
+                x-kubernetes-map-type: atomic
+              details:
+                additionalProperties:
+                  type: string
+                description: Optional details map for deployVirtualMachine
+                type: object
+              diskOffering:
+                description: CloudStack disk offering to use.
+                properties:
+                  customSizeInGB:
+                    description: Desired disk size. Used if disk offering is customizable
+                      as indicated by the ACS field 'Custom Disk Size'.
+                    format: int64
+                    type: integer
+                  device:
+                    description: device name of data disk, for example /dev/vdb
+                    type: string
+                  filesystem:
+                    description: filesystem used by data disk, for example, ext4,
+                      xfs
+                    type: string
+                  id:
+                    description: Cloudstack resource ID.
+                    type: string
+                  label:
+                    description: label of data disk, used by mkfs as label parameter
+                    type: string
+                  mountPath:
+                    description: mount point the data disk uses to mount. The actual
+                      partition, mkfs and mount are done by cloud-init generated by
+                      kubeadmConfig.
+                    type: string
+                  name:
+                    description: Cloudstack resource Name
+                    type: string
+                required:
+                - device
+                - filesystem
+                - label
+                - mountPath
+                type: object
+              id:
+                description: ID.
+                type: string
+              identityRef:
+                description: IdentityRef is a reference to an identity to be used
+                  when reconciling this cluster
+                properties:
+                  kind:
+                    description: |-
+                      Kind of the identity. Must be supported by the infrastructure provider
+                      and may be either cluster or namespace-scoped.
+                    minLength: 1
+                    type: string
+                  name:
+                    description: Name of the infrastructure identity to be used.
+                    type: string
+                required:
+                - kind
+                - name
+                type: object
+              instanceID:
+                description: Instance ID. Should only be useful to modify an existing
+                  instance.
+                type: string
+              name:
+                description: Name.
+                type: string
+              offering:
+                description: CloudStack compute offering.
+                properties:
+                  id:
+                    description: Cloudstack resource ID.
+                    type: string
+                  name:
+                    description: Cloudstack resource Name
+                    type: string
+                type: object
+              providerID:
+                description: 'The CS specific unique identifier. Of the form: fmt.Sprintf("cloudstack:///%s",
+                  CS Machine ID)'
+                type: string
+              sshKey:
+                description: CloudStack ssh key to use.
+                type: string
+              template:
+                description: CloudStack template to use.
+                properties:
+                  id:
+                    description: Cloudstack resource ID.
+                    type: string
+                  name:
+                    description: Cloudstack resource Name
+                    type: string
+                type: object
+              zoneID:
+                description: Optionally settable Zone ID to land the machine in.
+                type: string
+              zoneName:
+                description: Optionally settable Zone Name to land the machine in.
+                type: string
+            required:
+            - offering
+            - template
+            type: object
+          status:
+            description: Type pulled mostly from the CloudStack API.
+            properties:
+              addresses:
+                description: Addresses contains a CloudStack VM instance's IP addresses.
+                items:
+                  description: NodeAddress contains information for the node's address.
+                  properties:
+                    address:
+                      description: The node address.
+                      type: string
+                    type:
+                      description: Node address type, one of Hostname, ExternalIP
+                        or InternalIP.
+                      type: string
+                  required:
+                  - address
+                  - type
+                  type: object
+                type: array
+              instanceState:
+                description: InstanceState is the state of the CloudStack instance
+                  for this machine.
+                type: string
+              instanceStateLastUpdated:
+                description: InstanceStateLastUpdated is the time the instance state
+                  was last updated.
+                format: date-time
+                type: string
+              ready:
+                description: Ready indicates the readiness of the provider resource.
+                type: boolean
+              zoneID:
+                description: Zone ID is used so that the zone can be computed once
+                  per reconcile and then propagate.
+                type: string
+            required:
+            - ready
+            type: object
+        type: object
+    served: true
+    storage: false
+    subresources:
+      status: {}
+  - additionalPrinterColumns:
+    - description: Cluster to which this CloudStackMachine belongs
+      jsonPath: .metadata.labels.cluster\.x-k8s\.io/cluster-name
+      name: Cluster
+      type: string
+    - description: CloudStack instance state
+      jsonPath: .status.instanceState
+      name: InstanceState
+      type: string
+    - description: Machine ready status
+      jsonPath: .status.ready
+      name: Ready
+      type: string
+    - description: CloudStack instance ID
+      jsonPath: .spec.providerID
+      name: ProviderID
+      type: string
+    - description: Machine object which owns with this CloudStackMachine
+      jsonPath: .metadata.ownerReferences[?(@.kind=="Machine")].name
+      name: Machine
+      type: string
+    name: v1beta2
+    schema:
+      openAPIV3Schema:
+        description: CloudStackMachine is the Schema for the cloudstackmachines API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackMachineSpec defines the desired state of CloudStackMachine
+            properties:
+              affinity:
+                description: |-
+                  Mutually exclusive parameter with AffinityGroupIDs.
+                  Defaults to `no`. Can be `pro` or `anti`. Will create an affinity group per machine set.
+                type: string
+              affinityGroupIDs:
+                description: Optional affinitygroupids for deployVirtualMachine
+                items:
+                  type: string
+                type: array
+              cloudstackAffinityRef:
+                description: |-
+                  Mutually exclusive parameter with AffinityGroupIDs.
+                  Is a reference to a CloudStack affinity group CRD.
+                properties:
+                  apiVersion:
+                    description: API version of the referent.
+                    type: string
+                  fieldPath:
+                    description: |-
+                      If referring to a piece of an object instead of an entire object, this string
+                      should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                      For example, if the object reference is to a container within a pod, this would take on a value like:
+                      "spec.containers{name}" (where "name" refers to the name of the container that triggered
+                      the event) or if no container name is specified "spec.containers[2]" (container with
+                      index 2 in this pod). This syntax is chosen only to have some well-defined way of
+                      referencing a part of an object.
+                    type: string
+                  kind:
+                    description: |-
+                      Kind of the referent.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+                    type: string
+                  name:
+                    description: |-
+                      Name of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                    type: string
+                  namespace:
+                    description: |-
+                      Namespace of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+                    type: string
+                  resourceVersion:
+                    description: |-
+                      Specific resourceVersion to which this reference is made, if any.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+                    type: string
+                  uid:
+                    description: |-
+                      UID of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+                    type: string
+                type: object
+                x-kubernetes-map-type: atomic
+              details:
+                additionalProperties:
+                  type: string
+                description: Optional details map for deployVirtualMachine
+                type: object
+              diskOffering:
+                description: CloudStack disk offering to use.
+                properties:
+                  customSizeInGB:
+                    description: Desired disk size. Used if disk offering is customizable
+                      as indicated by the ACS field 'Custom Disk Size'.
+                    format: int64
+                    type: integer
+                  device:
+                    description: device name of data disk, for example /dev/vdb
+                    type: string
+                  filesystem:
+                    description: filesystem used by data disk, for example, ext4,
+                      xfs
+                    type: string
+                  id:
+                    description: Cloudstack resource ID.
+                    type: string
+                  label:
+                    description: label of data disk, used by mkfs as label parameter
+                    type: string
+                  mountPath:
+                    description: mount point the data disk uses to mount. The actual
+                      partition, mkfs and mount are done by cloud-init generated by
+                      kubeadmConfig.
+                    type: string
+                  name:
+                    description: Cloudstack resource Name
+                    type: string
+                required:
+                - device
+                - filesystem
+                - label
+                - mountPath
+                type: object
+              failureDomainName:
+                description: FailureDomainName -- the name of the FailureDomain the
+                  machine is placed in.
+                type: string
+              id:
+                description: ID.
+                type: string
+              instanceID:
+                description: Instance ID. Should only be useful to modify an existing
+                  instance.
+                type: string
+              name:
+                description: Name.
+                type: string
+              offering:
+                description: CloudStack compute offering.
+                properties:
+                  id:
+                    description: Cloudstack resource ID.
+                    type: string
+                  name:
+                    description: Cloudstack resource Name
+                    type: string
+                type: object
+              providerID:
+                description: 'The CS specific unique identifier. Of the form: fmt.Sprintf("cloudstack:///%s",
+                  CS Machine ID)'
+                type: string
+              sshKey:
+                description: CloudStack ssh key to use.
+                type: string
+              template:
+                description: CloudStack template to use.
+                properties:
+                  id:
+                    description: Cloudstack resource ID.
+                    type: string
+                  name:
+                    description: Cloudstack resource Name
+                    type: string
+                type: object
+              uncompressedUserData:
+                description: |-
+                  UncompressedUserData specifies whether the user data is gzip-compressed.
+                  cloud-init has built-in support for gzip-compressed user data, ignition does not
+                type: boolean
+            required:
+            - offering
+            - template
+            type: object
+          status:
+            description: Type pulled mostly from the CloudStack API.
+            properties:
+              addresses:
+                description: Addresses contains a CloudStack VM instance's IP addresses.
+                items:
+                  description: NodeAddress contains information for the node's address.
+                  properties:
+                    address:
+                      description: The node address.
+                      type: string
+                    type:
+                      description: Node address type, one of Hostname, ExternalIP
+                        or InternalIP.
+                      type: string
+                  required:
+                  - address
+                  - type
+                  type: object
+                type: array
+              instanceState:
+                description: InstanceState is the state of the CloudStack instance
+                  for this machine.
+                type: string
+              instanceStateLastUpdated:
+                description: InstanceStateLastUpdated is the time the instance state
+                  was last updated.
+                format: date-time
+                type: string
+              ready:
+                description: Ready indicates the readiness of the provider resource.
+                type: boolean
+              reason:
+                description: Reason indicates the reason of status failure
+                type: string
+              status:
+                description: Status indicates the status of the provider resource.
+                type: string
+            required:
+            - ready
+            type: object
+        type: object
+    served: true
+    storage: false
+    subresources:
+      status: {}
+  - additionalPrinterColumns:
+    - description: Cluster to which this CloudStackMachine belongs
+      jsonPath: .metadata.labels.cluster\.x-k8s\.io/cluster-name
+      name: Cluster
+      type: string
+    - description: CloudStack instance state
+      jsonPath: .status.instanceState
+      name: InstanceState
+      type: string
+    - description: Machine ready status
+      jsonPath: .status.ready
+      name: Ready
+      type: string
+    - description: CloudStack instance ID
+      jsonPath: .spec.providerID
+      name: ProviderID
+      type: string
+    - description: Machine object which owns with this CloudStackMachine
+      jsonPath: .metadata.ownerReferences[?(@.kind=="Machine")].name
+      name: Machine
+      type: string
+    name: v1beta3
+    schema:
+      openAPIV3Schema:
+        description: CloudStackMachine is the Schema for the cloudstackmachines API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackMachineSpec defines the desired state of CloudStackMachine
+            properties:
+              affinity:
+                description: |-
+                  Mutually exclusive parameter with AffinityGroupIDs.
+                  Defaults to `no`. Can be `pro` or `anti`. Will create an affinity group per machine set.
+                type: string
+              affinityGroupIDs:
+                description: Optional affinitygroupids for deployVirtualMachine
+                items:
+                  type: string
+                type: array
+              cloudstackAffinityRef:
+                description: |-
+                  Mutually exclusive parameter with AffinityGroupIDs.
+                  Is a reference to a CloudStack affinity group CRD.
+                properties:
+                  apiVersion:
+                    description: API version of the referent.
+                    type: string
+                  fieldPath:
+                    description: |-
+                      If referring to a piece of an object instead of an entire object, this string
+                      should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                      For example, if the object reference is to a container within a pod, this would take on a value like:
+                      "spec.containers{name}" (where "name" refers to the name of the container that triggered
+                      the event) or if no container name is specified "spec.containers[2]" (container with
+                      index 2 in this pod). This syntax is chosen only to have some well-defined way of
+                      referencing a part of an object.
+                    type: string
+                  kind:
+                    description: |-
+                      Kind of the referent.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+                    type: string
+                  name:
+                    description: |-
+                      Name of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                    type: string
+                  namespace:
+                    description: |-
+                      Namespace of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+                    type: string
+                  resourceVersion:
+                    description: |-
+                      Specific resourceVersion to which this reference is made, if any.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+                    type: string
+                  uid:
+                    description: |-
+                      UID of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+                    type: string
+                type: object
+                x-kubernetes-map-type: atomic
+              details:
+                additionalProperties:
+                  type: string
+                description: Optional details map for deployVirtualMachine
+                type: object
+              diskOffering:
+                description: CloudStack disk offering to use.
+                properties:
+                  customSizeInGB:
+                    description: Desired disk size. Used if disk offering is customizable
+                      as indicated by the ACS field 'Custom Disk Size'.
+                    format: int64
+                    type: integer
+                  device:
+                    description: device name of data disk, for example /dev/vdb
+                    type: string
+                  filesystem:
+                    description: filesystem used by data disk, for example, ext4,
+                      xfs
+                    type: string
+                  id:
+                    description: Cloudstack resource ID.
+                    type: string
+                  label:
+                    description: label of data disk, used by mkfs as label parameter
+                    type: string
+                  mountPath:
+                    description: mount point the data disk uses to mount. The actual
+                      partition, mkfs and mount are done by cloud-init generated by
+                      kubeadmConfig.
+                    type: string
+                  name:
+                    description: Cloudstack resource Name
+                    type: string
+                required:
+                - device
+                - filesystem
+                - label
+                - mountPath
+                type: object
+              failureDomainName:
+                description: FailureDomainName -- the name of the FailureDomain the
+                  machine is placed in.
+                type: string
+              id:
+                description: ID.
+                type: string
+              instanceID:
+                description: Instance ID. Should only be useful to modify an existing
+                  instance.
+                type: string
+              name:
+                description: Name.
+                type: string
+              networks:
+                description: |-
+                  The list of networks (overrides zone.network)
+                  In CloudStackMachineSpec
+                items:
+                  properties:
+                    id:
+                      description: Optional Network ID (overrides Name if set)
+                      type: string
+                    ip:
+                      description: Optional IP in the network
+                      type: string
+                    name:
+                      description: CloudStack Network Name (required to resolve ID)
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
+              offering:
+                description: CloudStack compute offering.
+                properties:
+                  id:
+                    description: Cloudstack resource ID.
+                    type: string
+                  name:
+                    description: Cloudstack resource Name
+                    type: string
+                type: object
+              providerID:
+                description: 'The CS specific unique identifier. Of the form: fmt.Sprintf("cloudstack:///%s",
+                  CS Machine ID)'
+                type: string
+              sshKey:
+                description: CloudStack ssh key to use.
+                type: string
+              template:
+                description: CloudStack template to use.
+                properties:
+                  id:
+                    description: Cloudstack resource ID.
+                    type: string
+                  name:
+                    description: Cloudstack resource Name
+                    type: string
+                type: object
+              uncompressedUserData:
+                description: |-
+                  UncompressedUserData specifies whether the user data is gzip-compressed.
+                  cloud-init has built-in support for gzip-compressed user data, ignition does not
+                type: boolean
+            required:
+            - offering
+            - template
+            type: object
+          status:
+            description: Type pulled mostly from the CloudStack API.
+            properties:
+              addresses:
+                description: Addresses contains a CloudStack VM instance's IP addresses.
+                items:
+                  description: NodeAddress contains information for the node's address.
+                  properties:
+                    address:
+                      description: The node address.
+                      type: string
+                    type:
+                      description: Node address type, one of Hostname, ExternalIP
+                        or InternalIP.
+                      type: string
+                  required:
+                  - address
+                  - type
+                  type: object
+                type: array
+              instanceState:
+                description: InstanceState is the state of the CloudStack instance
+                  for this machine.
+                type: string
+              instanceStateLastUpdated:
+                description: InstanceStateLastUpdated is the time the instance state
+                  was last updated.
+                format: date-time
+                type: string
+              ready:
+                description: Ready indicates the readiness of the provider resource.
+                type: boolean
+              reason:
+                description: Reason indicates the reason of status failure
+                type: string
+              status:
+                description: Status indicates the status of the provider resource.
+                type: string
+            required:
+            - ready
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: capi-webhook-system/capc-webhook-service
+    controller-gen.kubebuilder.io/version: v0.16.5
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-cloudstack
+    cluster.x-k8s.io/v1beta1: v1beta1_v1beta2_v1beta3
+  name: cloudstackmachinestatecheckers.infrastructure.cluster.x-k8s.io
+spec:
+  conversion:
+    strategy: Webhook
+    webhook:
+      clientConfig:
+        service:
+          name: capc-webhook-service
+          namespace: capi-webhook-system
+          path: /convert
+      conversionReviewVersions:
+      - v1
+  group: infrastructure.cluster.x-k8s.io
+  names:
+    kind: CloudStackMachineStateChecker
+    listKind: CloudStackMachineStateCheckerList
+    plural: cloudstackmachinestatecheckers
+    singular: cloudstackmachinestatechecker
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: CloudStackMachineStateChecker is the Schema for the cloudstackmachinestatecheckers
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackMachineStateCheckerSpec
+            properties:
+              instanceID:
+                description: CloudStack machine instance ID
+                type: string
+            type: object
+          status:
+            description: CloudStackMachineStateCheckerStatus defines the observed
+              state of CloudStackMachineStateChecker
+            properties:
+              ready:
+                description: Reflects the readiness of the Machine State Checker.
+                type: boolean
+            required:
+            - ready
+            type: object
+        type: object
+    served: true
+    storage: false
+    subresources:
+      status: {}
+  - name: v1beta2
+    schema:
+      openAPIV3Schema:
+        description: CloudStackMachineStateChecker is the Schema for the cloudstackmachinestatecheckers
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackMachineStateCheckerSpec
+            properties:
+              instanceID:
+                description: CloudStack machine instance ID
+                type: string
+            type: object
+          status:
+            description: CloudStackMachineStateCheckerStatus defines the observed
+              state of CloudStackMachineStateChecker
+            properties:
+              ready:
+                description: Reflects the readiness of the Machine State Checker.
+                type: boolean
+            required:
+            - ready
+            type: object
+        type: object
+    served: true
+    storage: false
+    subresources:
+      status: {}
+  - name: v1beta3
+    schema:
+      openAPIV3Schema:
+        description: CloudStackMachineStateChecker is the Schema for the cloudstackmachinestatecheckers
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackMachineStateCheckerSpec
+            properties:
+              instanceID:
+                description: CloudStack machine instance ID
+                type: string
+            type: object
+          status:
+            description: CloudStackMachineStateCheckerStatus defines the observed
+              state of CloudStackMachineStateChecker
+            properties:
+              ready:
+                description: Reflects the readiness of the Machine State Checker.
+                type: boolean
+            required:
+            - ready
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: capi-webhook-system/capc-webhook-service
+    controller-gen.kubebuilder.io/version: v0.16.5
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-cloudstack
+    cluster.x-k8s.io/v1beta1: v1beta1_v1beta2_v1beta3
+  name: cloudstackmachinetemplates.infrastructure.cluster.x-k8s.io
+spec:
+  conversion:
+    strategy: Webhook
+    webhook:
+      clientConfig:
+        service:
+          name: capc-webhook-service
+          namespace: capi-webhook-system
+          path: /convert
+      conversionReviewVersions:
+      - v1
+  group: infrastructure.cluster.x-k8s.io
+  names:
+    kind: CloudStackMachineTemplate
+    listKind: CloudStackMachineTemplateList
+    plural: cloudstackmachinetemplates
+    singular: cloudstackmachinetemplate
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: CloudStackMachineTemplate is the Schema for the cloudstackmachinetemplates
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackMachineTemplateSpec defines the desired state of
+              CloudStackMachineTemplate
+            properties:
+              template:
+                properties:
+                  metadata:
+                    description: |-
+                      Standard object's metadata.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+                    type: object
+                  spec:
+                    description: CloudStackMachineSpec defines the desired state of
+                      CloudStackMachine
+                    properties:
+                      affinity:
+                        description: |-
+                          Mutually exclusive parameter with AffinityGroupIDs.
+                          Defaults to `no`. Can be `pro` or `anti`. Will create an affinity group per machine set.
+                        type: string
+                      affinitygroupids:
+                        description: Optional affinitygroupids for deployVirtualMachine
+                        items:
+                          type: string
+                        type: array
+                      cloudstackaffinityref:
+                        description: |-
+                          Mutually exclusive parameter with AffinityGroupIDs.
+                          Is a reference to a CloudStack affiniity group CRD.
+                        properties:
+                          apiVersion:
+                            description: API version of the referent.
+                            type: string
+                          fieldPath:
+                            description: |-
+                              If referring to a piece of an object instead of an entire object, this string
+                              should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                              For example, if the object reference is to a container within a pod, this would take on a value like:
+                              "spec.containers{name}" (where "name" refers to the name of the container that triggered
+                              the event) or if no container name is specified "spec.containers[2]" (container with
+                              index 2 in this pod). This syntax is chosen only to have some well-defined way of
+                              referencing a part of an object.
+                            type: string
+                          kind:
+                            description: |-
+                              Kind of the referent.
+                              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+                            type: string
+                          name:
+                            description: |-
+                              Name of the referent.
+                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            type: string
+                          namespace:
+                            description: |-
+                              Namespace of the referent.
+                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+                            type: string
+                          resourceVersion:
+                            description: |-
+                              Specific resourceVersion to which this reference is made, if any.
+                              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+                            type: string
+                          uid:
+                            description: |-
+                              UID of the referent.
+                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+                            type: string
+                        type: object
+                        x-kubernetes-map-type: atomic
+                      details:
+                        additionalProperties:
+                          type: string
+                        description: Optional details map for deployVirtualMachine
+                        type: object
+                      diskOffering:
+                        description: CloudStack disk offering to use.
+                        properties:
+                          customSizeInGB:
+                            description: Desired disk size. Used if disk offering
+                              is customizable as indicated by the ACS field 'Custom
+                              Disk Size'.
+                            format: int64
+                            type: integer
+                          device:
+                            description: device name of data disk, for example /dev/vdb
+                            type: string
+                          filesystem:
+                            description: filesystem used by data disk, for example,
+                              ext4, xfs
+                            type: string
+                          id:
+                            description: Cloudstack resource ID.
+                            type: string
+                          label:
+                            description: label of data disk, used by mkfs as label
+                              parameter
+                            type: string
+                          mountPath:
+                            description: mount point the data disk uses to mount.
+                              The actual partition, mkfs and mount are done by cloud-init
+                              generated by kubeadmConfig.
+                            type: string
+                          name:
+                            description: Cloudstack resource Name
+                            type: string
+                        required:
+                        - device
+                        - filesystem
+                        - label
+                        - mountPath
+                        type: object
+                      id:
+                        description: ID.
+                        type: string
+                      identityRef:
+                        description: IdentityRef is a reference to an identity to
+                          be used when reconciling this cluster
+                        properties:
+                          kind:
+                            description: |-
+                              Kind of the identity. Must be supported by the infrastructure provider
+                              and may be either cluster or namespace-scoped.
+                            minLength: 1
+                            type: string
+                          name:
+                            description: Name of the infrastructure identity to be
+                              used.
+                            type: string
+                        required:
+                        - kind
+                        - name
+                        type: object
+                      instanceID:
+                        description: Instance ID. Should only be useful to modify
+                          an existing instance.
+                        type: string
+                      name:
+                        description: Name.
+                        type: string
+                      offering:
+                        description: CloudStack compute offering.
+                        properties:
+                          id:
+                            description: Cloudstack resource ID.
+                            type: string
+                          name:
+                            description: Cloudstack resource Name
+                            type: string
+                        type: object
+                      providerID:
+                        description: 'The CS specific unique identifier. Of the form:
+                          fmt.Sprintf("cloudstack:///%s", CS Machine ID)'
+                        type: string
+                      sshKey:
+                        description: CloudStack ssh key to use.
+                        type: string
+                      template:
+                        description: CloudStack template to use.
+                        properties:
+                          id:
+                            description: Cloudstack resource ID.
+                            type: string
+                          name:
+                            description: Cloudstack resource Name
+                            type: string
+                        type: object
+                      zoneID:
+                        description: Optionally settable Zone ID to land the machine
+                          in.
+                        type: string
+                      zoneName:
+                        description: Optionally settable Zone Name to land the machine
+                          in.
+                        type: string
+                    required:
+                    - offering
+                    - template
+                    type: object
+                required:
+                - spec
+                type: object
+            required:
+            - template
+            type: object
+        type: object
+    served: true
+    storage: false
+    subresources:
+      status: {}
+  - name: v1beta2
+    schema:
+      openAPIV3Schema:
+        description: CloudStackMachineTemplate is the Schema for the cloudstackmachinetemplates
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackMachineTemplateSpec defines the desired state of
+              CloudStackMachineTemplate
+            properties:
+              template:
+                properties:
+                  metadata:
+                    description: |-
+                      Standard object's metadata.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+                    nullable: true
+                    type: object
+                  spec:
+                    description: CloudStackMachineSpec defines the desired state of
+                      CloudStackMachine
+                    properties:
+                      affinity:
+                        description: |-
+                          Mutually exclusive parameter with AffinityGroupIDs.
+                          Defaults to `no`. Can be `pro` or `anti`. Will create an affinity group per machine set.
+                        type: string
+                      affinityGroupIDs:
+                        description: Optional affinitygroupids for deployVirtualMachine
+                        items:
+                          type: string
+                        type: array
+                      cloudstackAffinityRef:
+                        description: |-
+                          Mutually exclusive parameter with AffinityGroupIDs.
+                          Is a reference to a CloudStack affinity group CRD.
+                        properties:
+                          apiVersion:
+                            description: API version of the referent.
+                            type: string
+                          fieldPath:
+                            description: |-
+                              If referring to a piece of an object instead of an entire object, this string
+                              should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                              For example, if the object reference is to a container within a pod, this would take on a value like:
+                              "spec.containers{name}" (where "name" refers to the name of the container that triggered
+                              the event) or if no container name is specified "spec.containers[2]" (container with
+                              index 2 in this pod). This syntax is chosen only to have some well-defined way of
+                              referencing a part of an object.
+                            type: string
+                          kind:
+                            description: |-
+                              Kind of the referent.
+                              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+                            type: string
+                          name:
+                            description: |-
+                              Name of the referent.
+                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            type: string
+                          namespace:
+                            description: |-
+                              Namespace of the referent.
+                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+                            type: string
+                          resourceVersion:
+                            description: |-
+                              Specific resourceVersion to which this reference is made, if any.
+                              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+                            type: string
+                          uid:
+                            description: |-
+                              UID of the referent.
+                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+                            type: string
+                        type: object
+                        x-kubernetes-map-type: atomic
+                      details:
+                        additionalProperties:
+                          type: string
+                        description: Optional details map for deployVirtualMachine
+                        type: object
+                      diskOffering:
+                        description: CloudStack disk offering to use.
+                        properties:
+                          customSizeInGB:
+                            description: Desired disk size. Used if disk offering
+                              is customizable as indicated by the ACS field 'Custom
+                              Disk Size'.
+                            format: int64
+                            type: integer
+                          device:
+                            description: device name of data disk, for example /dev/vdb
+                            type: string
+                          filesystem:
+                            description: filesystem used by data disk, for example,
+                              ext4, xfs
+                            type: string
+                          id:
+                            description: Cloudstack resource ID.
+                            type: string
+                          label:
+                            description: label of data disk, used by mkfs as label
+                              parameter
+                            type: string
+                          mountPath:
+                            description: mount point the data disk uses to mount.
+                              The actual partition, mkfs and mount are done by cloud-init
+                              generated by kubeadmConfig.
+                            type: string
+                          name:
+                            description: Cloudstack resource Name
+                            type: string
+                        required:
+                        - device
+                        - filesystem
+                        - label
+                        - mountPath
+                        type: object
+                      failureDomainName:
+                        description: FailureDomainName -- the name of the FailureDomain
+                          the machine is placed in.
+                        type: string
+                      id:
+                        description: ID.
+                        type: string
+                      instanceID:
+                        description: Instance ID. Should only be useful to modify
+                          an existing instance.
+                        type: string
+                      name:
+                        description: Name.
+                        type: string
+                      offering:
+                        description: CloudStack compute offering.
+                        properties:
+                          id:
+                            description: Cloudstack resource ID.
+                            type: string
+                          name:
+                            description: Cloudstack resource Name
+                            type: string
+                        type: object
+                      providerID:
+                        description: 'The CS specific unique identifier. Of the form:
+                          fmt.Sprintf("cloudstack:///%s", CS Machine ID)'
+                        type: string
+                      sshKey:
+                        description: CloudStack ssh key to use.
+                        type: string
+                      template:
+                        description: CloudStack template to use.
+                        properties:
+                          id:
+                            description: Cloudstack resource ID.
+                            type: string
+                          name:
+                            description: Cloudstack resource Name
+                            type: string
+                        type: object
+                      uncompressedUserData:
+                        description: |-
+                          UncompressedUserData specifies whether the user data is gzip-compressed.
+                          cloud-init has built-in support for gzip-compressed user data, ignition does not
+                        type: boolean
+                    required:
+                    - offering
+                    - template
+                    type: object
+                required:
+                - spec
+                type: object
+            required:
+            - template
+            type: object
+        type: object
+    served: true
+    storage: false
+    subresources:
+      status: {}
+  - name: v1beta3
+    schema:
+      openAPIV3Schema:
+        description: CloudStackMachineTemplate is the Schema for the cloudstackmachinetemplates
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackMachineTemplateSpec defines the desired state of
+              CloudstackMachineTemplate
+            properties:
+              template:
+                description: CloudStackMachineTemplateResource defines the data needed
+                  to create a CloudstackMachine from a template
+                properties:
+                  metadata:
+                    description: |-
+                      Standard object's metadata.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+                    properties:
+                      annotations:
+                        additionalProperties:
+                          type: string
+                        description: |-
+                          annotations is an unstructured key value map stored with a resource that may be
+                          set by external tools to store and retrieve arbitrary metadata. They are not
+                          queryable and should be preserved when modifying objects.
+                          More info: http://kubernetes.io/docs/user-guide/annotations
+                        type: object
+                      labels:
+                        additionalProperties:
+                          type: string
+                        description: |-
+                          Map of string keys and values that can be used to organize and categorize
+                          (scope and select) objects. May match selectors of replication controllers
+                          and services.
+                          More info: http://kubernetes.io/docs/user-guide/labels
+                        type: object
+                    type: object
+                  spec:
+                    description: Spec is the specification of a desired behavior of
+                      the machine
+                    properties:
+                      affinity:
+                        description: |-
+                          Mutually exclusive parameter with AffinityGroupIDs.
+                          Defaults to `no`. Can be `pro` or `anti`. Will create an affinity group per machine set.
+                        type: string
+                      affinityGroupIDs:
+                        description: Optional affinitygroupids for deployVirtualMachine
+                        items:
+                          type: string
+                        type: array
+                      cloudstackAffinityRef:
+                        description: |-
+                          Mutually exclusive parameter with AffinityGroupIDs.
+                          Is a reference to a CloudStack affinity group CRD.
+                        properties:
+                          apiVersion:
+                            description: API version of the referent.
+                            type: string
+                          fieldPath:
+                            description: |-
+                              If referring to a piece of an object instead of an entire object, this string
+                              should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                              For example, if the object reference is to a container within a pod, this would take on a value like:
+                              "spec.containers{name}" (where "name" refers to the name of the container that triggered
+                              the event) or if no container name is specified "spec.containers[2]" (container with
+                              index 2 in this pod). This syntax is chosen only to have some well-defined way of
+                              referencing a part of an object.
+                            type: string
+                          kind:
+                            description: |-
+                              Kind of the referent.
+                              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+                            type: string
+                          name:
+                            description: |-
+                              Name of the referent.
+                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            type: string
+                          namespace:
+                            description: |-
+                              Namespace of the referent.
+                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+                            type: string
+                          resourceVersion:
+                            description: |-
+                              Specific resourceVersion to which this reference is made, if any.
+                              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+                            type: string
+                          uid:
+                            description: |-
+                              UID of the referent.
+                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+                            type: string
+                        type: object
+                        x-kubernetes-map-type: atomic
+                      details:
+                        additionalProperties:
+                          type: string
+                        description: Optional details map for deployVirtualMachine
+                        type: object
+                      diskOffering:
+                        description: CloudStack disk offering to use.
+                        properties:
+                          customSizeInGB:
+                            description: Desired disk size. Used if disk offering
+                              is customizable as indicated by the ACS field 'Custom
+                              Disk Size'.
+                            format: int64
+                            type: integer
+                          device:
+                            description: device name of data disk, for example /dev/vdb
+                            type: string
+                          filesystem:
+                            description: filesystem used by data disk, for example,
+                              ext4, xfs
+                            type: string
+                          id:
+                            description: Cloudstack resource ID.
+                            type: string
+                          label:
+                            description: label of data disk, used by mkfs as label
+                              parameter
+                            type: string
+                          mountPath:
+                            description: mount point the data disk uses to mount.
+                              The actual partition, mkfs and mount are done by cloud-init
+                              generated by kubeadmConfig.
+                            type: string
+                          name:
+                            description: Cloudstack resource Name
+                            type: string
+                        required:
+                        - device
+                        - filesystem
+                        - label
+                        - mountPath
+                        type: object
+                      failureDomainName:
+                        description: FailureDomainName -- the name of the FailureDomain
+                          the machine is placed in.
+                        type: string
+                      id:
+                        description: ID.
+                        type: string
+                      instanceID:
+                        description: Instance ID. Should only be useful to modify
+                          an existing instance.
+                        type: string
+                      name:
+                        description: Name.
+                        type: string
+                      networks:
+                        description: |-
+                          The list of networks (overrides zone.network)
+                          In CloudStackMachineSpec
+                        items:
+                          properties:
+                            id:
+                              description: Optional Network ID (overrides Name if
+                                set)
+                              type: string
+                            ip:
+                              description: Optional IP in the network
+                              type: string
+                            name:
+                              description: CloudStack Network Name (required to resolve
+                                ID)
+                              type: string
+                          required:
+                          - name
+                          type: object
+                        type: array
+                      offering:
+                        description: CloudStack compute offering.
+                        properties:
+                          id:
+                            description: Cloudstack resource ID.
+                            type: string
+                          name:
+                            description: Cloudstack resource Name
+                            type: string
+                        type: object
+                      providerID:
+                        description: 'The CS specific unique identifier. Of the form:
+                          fmt.Sprintf("cloudstack:///%s", CS Machine ID)'
+                        type: string
+                      sshKey:
+                        description: CloudStack ssh key to use.
+                        type: string
+                      template:
+                        description: CloudStack template to use.
+                        properties:
+                          id:
+                            description: Cloudstack resource ID.
+                            type: string
+                          name:
+                            description: Cloudstack resource Name
+                            type: string
+                        type: object
+                      uncompressedUserData:
+                        description: |-
+                          UncompressedUserData specifies whether the user data is gzip-compressed.
+                          cloud-init has built-in support for gzip-compressed user data, ignition does not
+                        type: boolean
+                    required:
+                    - offering
+                    - template
+                    type: object
+                required:
+                - spec
+                type: object
+            required:
+            - template
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: capi-webhook-system/capc-webhook-service
+    controller-gen.kubebuilder.io/version: v0.16.5
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-cloudstack
+    cluster.x-k8s.io/v1beta1: v1beta1_v1beta2_v1beta3
+  name: cloudstackzones.infrastructure.cluster.x-k8s.io
+spec:
+  conversion:
+    strategy: Webhook
+    webhook:
+      clientConfig:
+        service:
+          name: capc-webhook-service
+          namespace: capi-webhook-system
+          path: /convert
+      conversionReviewVersions:
+      - v1
+  group: infrastructure.cluster.x-k8s.io
+  names:
+    kind: CloudStackZone
+    listKind: CloudStackZoneList
+    plural: cloudstackzones
+    singular: cloudstackzone
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: CloudStackZone is the Schema for the cloudstackzones API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CloudStackZoneSpec defines the desired state of CloudStackZone
+            properties:
+              id:
+                description: ID.
+                type: string
+              name:
+                description: Name.
+                type: string
+              network:
+                description: The network within the Zone to use.
+                properties:
+                  id:
+                    description: Cloudstack Network ID the cluster is built in.
+                    type: string
+                  name:
+                    description: Cloudstack Network Name the cluster is built in.
+                    type: string
+                  type:
+                    description: Cloudstack Network Type the cluster is built in.
+                    type: string
+                type: object
+            required:
+            - network
+            type: object
+          status:
+            description: CloudStackZoneStatus defines the observed state of CloudStackZone
+            properties:
+              ready:
+                description: Reflects the readiness of the CloudStack zone.
+                type: boolean
+            required:
+            - ready
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: v1
+data:
+  controller_manager_config.yaml: |
+    apiVersion: controller-runtime.sigs.k8s.io/v1alpha1
+    kind: ControllerManagerConfig
+    health:
+      healthProbeBindAddress: :8081
+    metrics:
+      bindAddress: 127.0.0.1:8080
+    webhook:
+      port: 9443
+    leaderElection:
+      leaderElect: true
+      resourceName: d0f00250.cluster.x-k8s.io
+kind: ConfigMap
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-cloudstack
+  name: capc-manager-config
+  namespace: capi-webhook-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-cloudstack
+  name: capc-webhook-service
+  namespace: capi-webhook-system
+spec:
+  ports:
+  - port: 443
+    protocol: TCP
+    targetPort: 9443
+  selector:
+    control-plane: capc-controller-manager
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-cloudstack
+    control-plane: capc-webhook-manager
+  name: capc-controller-manager
+  namespace: capi-webhook-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: capc-webhook-manager
+  template:
+    metadata:
+      labels:
+        control-plane: capc-webhook-manager
+    spec:
+      containers:
+      - args:
+        - --webhook-port=9443
+        command:
+        - /manager
+        image: localhost:5000/cluster-api-provider-cloudstack:latest
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        name: manager
+        ports:
+        - containerPort: 9443
+          name: webhook-server
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: 100m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 50Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          runAsGroup: 65532
+          runAsUser: 65532
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: controller-manager
+      terminationGracePeriodSeconds: 10
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+      volumes:
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: capc-webhook-service-cert
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-cloudstack
+  name: capc-mutating-webhook-configuration
+webhooks:
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
+    service:
+      name: capc-webhook-service
+      namespace: capi-webhook-system
+      path: /mutate-infrastructure-cluster-x-k8s-io-v1beta3-cloudstackcluster
+  failurePolicy: Fail
+  name: mcloudstackcluster.kb.io
+  rules:
+  - apiGroups:
+    - infrastructure.cluster.x-k8s.io
+    apiVersions:
+    - v1beta3
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - cloudstackclusters
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
+    service:
+      name: capc-webhook-service
+      namespace: capi-webhook-system
+      path: /mutate-infrastructure-cluster-x-k8s-io-v1beta3-cloudstackmachine
+  failurePolicy: Fail
+  name: mcloudstackmachine.kb.io
+  rules:
+  - apiGroups:
+    - infrastructure.cluster.x-k8s.io
+    apiVersions:
+    - v1beta3
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - cloudstackmachines
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
+    service:
+      name: capc-webhook-service
+      namespace: capi-webhook-system
+      path: /mutate-infrastructure-cluster-x-k8s-io-v1beta3-cloudstackmachinetemplate
+  failurePolicy: Fail
+  name: mcloudstackmachinetemplate.kb.io
+  rules:
+  - apiGroups:
+    - infrastructure.cluster.x-k8s.io
+    apiVersions:
+    - v1beta3
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - cloudstackmachinetemplates
+  sideEffects: None
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-cloudstack
+  name: capc-validating-webhook-configuration
+webhooks:
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
+    service:
+      name: capc-webhook-service
+      namespace: capi-webhook-system
+      path: /validate-infrastructure-cluster-x-k8s-io-v1beta3-cloudstackcluster
+  failurePolicy: Fail
+  name: vcloudstackcluster.kb.io
+  rules:
+  - apiGroups:
+    - infrastructure.cluster.x-k8s.io
+    apiVersions:
+    - v1beta3
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - cloudstackclusters
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
+    service:
+      name: capc-webhook-service
+      namespace: capi-webhook-system
+      path: /validate-infrastructure-cluster-x-k8s-io-v1beta3-cloudstackmachine
+  failurePolicy: Fail
+  name: vcloudstackmachine.kb.io
+  rules:
+  - apiGroups:
+    - infrastructure.cluster.x-k8s.io
+    apiVersions:
+    - v1beta3
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - cloudstackmachines
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  - v1beta1
+  clientConfig:
+    service:
+      name: capc-webhook-service
+      namespace: capi-webhook-system
+      path: /validate-infrastructure-cluster-x-k8s-io-v1beta3-cloudstackmachinetemplate
+  failurePolicy: Fail
+  name: vcloudstackmachinetemplate.kb.io
+  rules:
+  - apiGroups:
+    - infrastructure.cluster.x-k8s.io
+    apiVersions:
+    - v1beta3
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - cloudstackmachinetemplates
+  sideEffects: None

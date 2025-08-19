@@ -1,0 +1,11 @@
+### User prompts (chronological)
+
+1. I want to run webhook and controller to run as separate pods using the same codebase and same image. Both can be differentiated by the cli flag webhook-port, where webhook-port=0 will be controller only mode and webhook-port=9443 will be webhook only mode. Along with that I also want manifests to be generated for both using a script in a separate folder named spectro. Webhook should have crds and manifest both. Skip rbac and cert-manager for both
+
+2. Skip the namespace patch for both controller and webhook. Skip rbac for controller
+
+3. Include namespace: capi-webhook-system in webhook kustomization. Also include vars section to replace CERTIFICATE_NAMESPACE)/$(CERTIFICATE_NAME in the generated manifests
+
+4. Can you do the same for SERVICE_NAMESPACE and SERVICE_NAME. Try not to skip any configuration present in original kustomization
+
+

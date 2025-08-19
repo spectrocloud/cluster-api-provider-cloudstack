@@ -87,6 +87,7 @@ type managerOpts struct {
 	CertDir              string
 	CertName             string
 	KeyName              string
+	WebhookPort          int
 
 	CloudStackClusterConcurrency       int
 	CloudStackMachineConcurrency       int
@@ -149,6 +150,12 @@ func setFlags() *managerOpts {
 		"webhook-key-name",
 		"tls.key",
 		"The name of the webhook key file.",
+	)
+	flag.IntVar(
+		&opts.WebhookPort,
+		"webhook-port",
+		9443,
+		"The port for the webhook server to listen on. Set to 0 to run in controller-only mode, set to 9443 to run in webhook-only mode.",
 	)
 	flag.IntVar(
 		&opts.CloudStackClusterConcurrency,
@@ -219,8 +226,8 @@ func main() {
 		}
 	}
 
-	// Create the controller manager.
-	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
+	// Configure manager options based on mode
+	managerOpts := ctrl.Options{
 		Scheme:                 scheme,
 		HealthProbeBindAddress: opts.ProbeAddr,
 		LeaderElection:         opts.EnableLeaderElection,
@@ -231,13 +238,6 @@ func main() {
 			DefaultNamespaces: watchingNamespaces,
 			SyncPeriod:        &opts.SyncPeriod,
 		},
-		WebhookServer: webhook.NewServer(webhook.Options{
-			Port:     9443,
-			CertDir:  opts.CertDir,
-			CertName: opts.CertName,
-			KeyName:  opts.KeyName,
-			TLSOpts:  tlsOptions,
-		}),
 		Client: client.Options{
 			Cache: &client.CacheOptions{
 				DisableFor: []client.Object{
@@ -246,23 +246,61 @@ func main() {
 				},
 			},
 		},
-	})
+	}
+
+	// Only add webhook server if webhook-port is not 0
+	if opts.WebhookPort != 0 {
+		managerOpts.WebhookServer = webhook.NewServer(webhook.Options{
+			Port:     opts.WebhookPort,
+			CertDir:  opts.CertDir,
+			CertName: opts.CertName,
+			KeyName:  opts.KeyName,
+			TLSOpts:  tlsOptions,
+		})
+	}
+
+	// Create the controller manager.
+	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), managerOpts)
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
 		os.Exit(1)
 	}
 
-	// Register reconcilers with the controller manager.
-	base := utils.ReconcilerBase{
-		K8sClient:  mgr.GetClient(),
-		BaseLogger: ctrl.Log.WithName("controllers"),
-		Recorder:   mgr.GetEventRecorderFor("capc-controller-manager"),
-		Scheme:     mgr.GetScheme(),
-	}
-
 	ctx := ctrl.SetupSignalHandler()
-	setupReconcilers(ctx, base, *opts, mgr)
-	infrav1b3.K8sClient = base.K8sClient
+
+	// Set up based on mode
+	if opts.WebhookPort == 0 {
+		// Controller-only mode
+		setupLog.Info("Starting in controller-only mode")
+
+		// Register reconcilers with the controller manager.
+		base := utils.ReconcilerBase{
+			K8sClient:  mgr.GetClient(),
+			BaseLogger: ctrl.Log.WithName("controllers"),
+			Recorder:   mgr.GetEventRecorderFor("capc-controller-manager"),
+			Scheme:     mgr.GetScheme(),
+		}
+
+		setupReconcilers(ctx, base, *opts, mgr)
+		infrav1b3.K8sClient = base.K8sClient
+	} else {
+		// Webhook-only mode
+		setupLog.Info("Starting in webhook-only mode", "port", opts.WebhookPort)
+
+		// Set up webhooks
+		if err = (&infrav1b3.CloudStackCluster{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "CloudStackCluster")
+			os.Exit(1)
+		}
+		if err = (&infrav1b3.CloudStackMachine{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "CloudStackMachine")
+			os.Exit(1)
+		}
+		if err = (&infrav1b3.CloudStackMachineTemplate{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "CloudStackMachineTemplate")
+			os.Exit(1)
+		}
+	}
 
 	// +kubebuilder:scaffold:builder
 
@@ -273,20 +311,6 @@ func main() {
 	}
 	if err = mgr.AddReadyzCheck("readyz", healthz.Ping); err != nil {
 		setupLog.Error(err, "unable to set up ready check")
-		os.Exit(1)
-	}
-
-	// Start the controller manager.
-	if err = (&infrav1b3.CloudStackCluster{}).SetupWebhookWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create webhook", "webhook", "CloudStackCluster")
-		os.Exit(1)
-	}
-	if err = (&infrav1b3.CloudStackMachine{}).SetupWebhookWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create webhook", "webhook", "CloudStackMachine")
-		os.Exit(1)
-	}
-	if err = (&infrav1b3.CloudStackMachineTemplate{}).SetupWebhookWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create webhook", "webhook", "CloudStackMachineTemplate")
 		os.Exit(1)
 	}
 
