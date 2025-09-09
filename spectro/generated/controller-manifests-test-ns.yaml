@@ -4,7 +4,7 @@ metadata:
   labels:
     cluster.x-k8s.io/provider: infrastructure-cloudstack
   name: capc-leader-elect-rolebinding
-  namespace: piyush-ns
+  namespace: test-ns
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -12,7 +12,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: capc-controller-manager
-  namespace: piyush-ns
+  namespace: test-ns
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -27,7 +27,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: capc-controller-manager
-  namespace: piyush-ns
+  namespace: test-ns
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -36,7 +36,7 @@ metadata:
     cluster.x-k8s.io/provider: infrastructure-cloudstack
     control-plane: controller-manager
   name: capc-controller-manager
-  namespace: piyush-ns
+  namespace: test-ns
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -44,7 +44,7 @@ metadata:
   labels:
     cluster.x-k8s.io/provider: infrastructure-cloudstack
   name: capc-leader-elect-role
-  namespace: piyush-ns
+  namespace: test-ns
 rules:
 - apiGroups:
   - ""
@@ -112,7 +112,7 @@ metadata:
     cluster.x-k8s.io/provider: infrastructure-cloudstack
     control-plane: capc-controller-manager
   name: capc-controller-manager
-  namespace: piyush-ns
+  namespace: test-ns
 spec:
   replicas: 1
   selector:

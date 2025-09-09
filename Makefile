@@ -47,8 +47,24 @@ RELEASE_TAG ?= $(shell git describe --abbrev=0 2>/dev/null)
 PULL_BASE_REF ?= $(RELEASE_TAG)
 RELEASE_ALIAS_TAG ?= $(PULL_BASE_REF)
 
+# Fips Flags
+FIPS_ENABLE ?= ""
+BUILD_ARGS = --build-arg CRYPTO_LIB=${FIPS_ENABLE} --build-arg BUILDER_GOLANG_VERSION=${BUILDER_GOLANG_VERSION}
+
+RELEASE_LOC := release
+ifeq ($(FIPS_ENABLE),yes)
+  RELEASE_LOC := release-fips
+endif
+
+SPECTRO_VERSION ?= 4.6.0-dev
+TAG ?= v2.7.1-spectro-${SPECTRO_VERSION}
+ARCH ?= amd64
+# ALL_ARCH = amd64 arm arm64 ppc64le s390x
+ALL_ARCH = amd64 arm64
+
+REGISTRY ?= us-east1-docker.pkg.dev/spectro-images/dev/$(USER)/${RELEASE_LOC}
+
 # Image URL to use all building/pushing image targets
-REGISTRY ?= $(STAGING_REGISTRY)
 IMAGE_NAME ?= capi-cloudstack-controller
 TAG ?= dev
 CONTROLLER_IMG ?= $(REGISTRY)/$(IMAGE_NAME)
@@ -218,9 +234,22 @@ docker-build: generate-deepcopy generate-conversion build-for-docker .dockerflag
 	docker build -t ${IMG} .
 	@touch .dockerflag.mk
 
+.PHONY: docker-build-all ## Build all the architecture docker images
+docker-build-all: $(addprefix docker-build-,$(ALL_ARCH))
+
+docker-build-%:
+	$(MAKE) ARCH=$* docker-build
+
 .PHONY: docker-push
 docker-push: .dockerflag.mk ## Push docker image with the manager.
 	docker push ${IMG}
+
+.PHONY: docker-push-all ## Push all the architecture docker images
+docker-push-all: $(addprefix docker-push-,$(ALL_ARCH))
+	$(MAKE) docker-push
+
+docker-push-%:
+	$(MAKE) ARCH=$* docker-push
 
 ##@ Tilt
 ## --------------------------------------
