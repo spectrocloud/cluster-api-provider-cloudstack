@@ -1,6 +1,7 @@
 ARG BUILDER_GOLANG_VERSION
+ARG ARCH
 # First stage: build the executable.
-FROM us-docker.pkg.dev/palette-images/build-base-images/golang:${BUILDER_GOLANG_VERSION}-alpine as toolchain
+FROM --platform=$ARCH us-docker.pkg.dev/palette-images/build-base-images/golang:${BUILDER_GOLANG_VERSION}-alpine as toolchain
 # Run this with docker build --build_arg $(go env GOPROXY) to override the goproxy
 ARG goproxy=https://proxy.golang.org
 ENV GOPROXY=$goproxy
