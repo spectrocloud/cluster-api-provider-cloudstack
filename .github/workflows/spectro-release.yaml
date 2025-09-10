@@ -1,7 +1,6 @@
 name: Spectro Release
 run-name: Release for Cluster API CloudStack ${{ github.event.inputs.release_version }}
 on:
-  push:
   workflow_dispatch:
     inputs:
       release_version:
