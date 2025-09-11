@@ -11,11 +11,11 @@ echo "Generating controller-only manifests..."
 # Create output directory
 mkdir -p "${SCRIPT_DIR}/generated"
 
-# Generate controller manifests (webhook-port=0)
-cd "${SCRIPT_DIR}/controller"
-kustomize build . > "${SCRIPT_DIR}/generated/controller-manifests.yaml"
+# Generate controller manifests
+cd "${SCRIPT_DIR}"
+kustomize build --load-restrictor LoadRestrictionsNone base > "${SCRIPT_DIR}/generated/core-base.yaml"
 
-echo "Controller-only manifests generated at: ${SCRIPT_DIR}/generated/controller-manifests.yaml"
+echo "Controller-only manifests generated: ${SCRIPT_DIR}/generated/core-base.yaml"
 echo ""
 echo "To deploy the controller:"
-echo "kubectl apply -f ${SCRIPT_DIR}/generated/controller-manifests.yaml"
+echo "kubectl apply -f ${SCRIPT_DIR}/generated/core-base.yaml"

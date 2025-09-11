@@ -6,18 +6,14 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "Generating all CAPC manifests..."
-
-# Generate controller manifests
-"${SCRIPT_DIR}/generate-controller-manifests.sh"
-
 echo ""
 
-# Generate webhook manifests
-"${SCRIPT_DIR}/generate-webhook-manifests.sh"
+# Use the standardized run.sh approach
+"${SCRIPT_DIR}/run.sh"
 
 echo ""
 echo "All manifests generated successfully!"
 echo ""
 echo "Generated files:"
-echo "  - Controller-only: ${SCRIPT_DIR}/generated/controller-manifests.yaml"
-echo "  - Webhook-only:    ${SCRIPT_DIR}/generated/webhook-manifests.yaml"
+echo "  - Controller-only: ${SCRIPT_DIR}/generated/core-base.yaml"
+echo "  - Webhook-only:    ${SCRIPT_DIR}/generated/core-global.yaml"

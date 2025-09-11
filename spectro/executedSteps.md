@@ -1,75 +1,159 @@
-### Single prompt to reproduce all changes
+### Single prompt to implement CAPI provider webhook/controller separation
 
-Use this single prompt:
+I need to implement webhook/controller separation for a CAPI provider following the standardized pattern used by AWS (CAPA), Azure (CAPZ), and CloudStack (CAPC). Please help me:
 
-- Modify main.go to allow running the same binary as either controller-only or webhook-only based on a new flag:
-  - Add int flag --webhook-port (default 9443). Behavior:
-    - If --webhook-port=0: controller-only mode. Do not create a webhook server; register reconcilers only.
-    - If --webhook-port!=0 (e.g., 9443): webhook-only mode. Create webhook server with that port; register webhooks only (no reconcilers).
-  - Only set ctrl.Options.WebhookServer when port != 0; keep health/ready probes and existing tlsOptions/metrics handling.
-  - Keep the existing cert/key flags (webhook-cert-dir/name/key) working.
+1. **Modify main.go** to support running the same binary in two modes:
+   - Add `--webhook-port` flag (int, provider-specific default)
+   - If `--webhook-port=0`: controller-only mode (register reconcilers only, no webhook server)
+   - If `--webhook-port!=0`: webhook-only mode (register webhooks only, no reconcilers)
+   - Note: Check existing provider defaults - some default to webhook mode, others to controller mode
+   - Use this pattern:
+     ```go
+     if webhookPort == 0 {
+         registerControllers(ctx, mgr)
+     } else {
+         registerWebhooks(mgr)
+     }
+     ```
 
-- Add a new spectro/ folder with scripts and kustomizations to generate two sets of manifests from the same code/image:
-  - spectro/controller/
-    - kustomization.yaml: 
-      - namePrefix: capc-
-      - labels: cluster.x-k8s.io/provider: "infrastructure-cloudstack"
-      - resources: ../../config/manager
-      - patches: manager_controller_patch.yaml
-      - Do NOT include namespace, RBAC, webhooks, or cert-manager.
-    - manager_controller_patch.yaml:
-      - Set spec.template.spec.serviceAccountName: default
-      - Container args include:
-        - --leader-elect
-        - --webhook-port=0
-        - --diagnostics-address=${CAPI_DIAGNOSTICS_ADDRESS:=:8443}
-        - --insecure-diagnostics=${CAPI_INSECURE_DIAGNOSTICS:=false}
-        - --cloudstackcluster-concurrency=${CAPC_CLOUDSTACKCLUSTER_CONCURRENCY:=10}
-        - --cloudstackmachine-concurrency=${CAPC_CLOUDSTACKMACHINE_CONCURRENCY:=10}
-        - --enable-cloudstack-cks-sync=${CAPC_CLOUDSTACKMACHINE_CKS_SYNC:=false}
-  - spectro/webhook/
-    - kustomization.yaml:
-      - namespace: capi-webhook-system
-      - namePrefix: capc-
-      - labels: cluster.x-k8s.io/provider: "infrastructure-cloudstack"
-      - resources: ../../config/crd, ../../config/manager, ../../config/webhook
-      - patches: manager_webhook_patch.yaml
-      - vars:
-        - CERTIFICATE_NAMESPACE: from Service/webhook-service metadata.namespace
-        - CERTIFICATE_NAME: from Service/webhook-service metadata.name
-        - SERVICE_NAMESPACE: from Service/webhook-service metadata.namespace
-        - SERVICE_NAME: from Service/webhook-service metadata.name
-      - configurations: [kustomizeconfig.yaml] (local file below)
-    - kustomizeconfig.yaml:
-      - nameReference: Service v1 → webhooks/clientConfig/service/name in MutatingWebhookConfiguration and ValidatingWebhookConfiguration
-      - namespace mapping: webhooks/clientConfig/service/namespace (create: true) in both webhook configurations
-      - varReference: metadata/annotations
-    - manager_webhook_patch.yaml:
-      - Label the Deployment/pod template with control-plane: capc-webhook-manager
-      - Set container args to include --webhook-port=9443
-      - Expose container port 9443 named webhook-server
-      - Mount TLS certs at /tmp/k8s-webhook-server/serving-certs from a Secret named capc-webhook-service-cert
-      - Do NOT add RBAC or cert-manager
-  - Scripts (make executable):
-    - spectro/generate-controller-manifests.sh: kustomize build spectro/controller → spectro/generated/controller-manifests.yaml
-    - spectro/generate-webhook-manifests.sh: kustomize build spectro/webhook → spectro/generated/webhook-manifests.yaml
-    - spectro/generate-all-manifests.sh: runs both scripts
-  - README in spectro/ explaining usage and that:
-    - Controller-only manifests: no namespace patch, no RBAC, no webhooks, no CRDs, no cert-manager
-    - Webhook-only manifests: include CRDs and webhook configs, no RBAC, no cert-manager, namespace is capi-webhook-system
-    - Both use the same image; functionality controlled by --webhook-port
+2. **Create spectro/ folder structure** with standardized naming:
+   ```
+   spectro/
+   ├── base/                     # Controller-only manifests
+   │   ├── kustomization.yaml    # Uses namePrefix: cap[X]-, namespace: cap[X]-system
+   │   ├── patch_service_account.yaml  # Sets serviceAccountName: default, --webhook-port=0
+   │   └── patch_healthcheck.yaml      # Removes health probes
+   ├── global/                   # Webhook-only manifests  
+   │   ├── kustomization.yaml    # Uses namespace: capi-webhook-system, includes CRDs
+   │   └── patch_service_account.yaml  # Removes serviceAccountName
+   ├── generated/                # Output directory
+   └── run.sh                    # Generation script
+   ```
 
-- Ensure generated outputs meet these checks:
-  - Controller manifests:
-    - Include args with --webhook-port=0
-    - Use serviceAccountName: default
-    - Do not contain CRDs or webhook configs
-  - Webhook manifests:
-    - Include CRDs and Mutating/ValidatingWebhookConfiguration pointing to Service/webhook-service
-    - Are in namespace capi-webhook-system
-    - cert-manager.io/inject-ca-from annotations resolve to capi-webhook-system/capc-webhook-service
-    - No RBAC or cert-manager resources included
+3. **Base configuration** (controller-only):
+   - **kustomization.yaml**: Use kustomize v1beta1 format, include only `../../config/manager`
+   - **patch_service_account.yaml**: JSON patch to set or remove serviceAccountName as needed. Provider-specific flags (e.g. --webhook-port=0) may be handled in separate patches if required.
+   - **patch_healthcheck.yaml**: JSON patch to remove liveness/readiness probes
+   - Target namespace: `cap[provider-prefix]-system` (e.g., `capc-system`)
 
-- Do not add or depend on namespace.yaml; do not include RBAC in controller; do not include cert-manager in webhook.
+4. **Global configuration** (webhook-only):
+   - **kustomization.yaml**: Include `../../config/crd`, `../../config/manager`, `../../config/webhook`, `../../config/certmanager`
+   - **patch_service_account.yaml**: JSON patch to remove serviceAccountName entirely
+   - Target namespace: `capi-webhook-system`
+   - Apply manager_webhook_patch.yaml and webhookcainjection_patch.yaml from config/default if they exist
+   - Include configurations section for kustomizeconfig.yaml
+   - Add vars section for CERTIFICATE_NAMESPACE, CERTIFICATE_NAME, SERVICE_NAMESPACE, SERVICE_NAME
+
+5. **Generation script** (run.sh):
+   ```bash
+   #!/bin/bash
+   rm -f generated/*
+   kustomize build --load-restrictor LoadRestrictionsNone global > ./generated/core-global.yaml
+   kustomize build --load-restrictor LoadRestrictionsNone base > ./generated/core-base.yaml
+   ```
+
+6. **Additional scripts** for compatibility:
+   - `generate-controller-manifests.sh`: Calls base kustomization → core-base.yaml
+   - `generate-webhook-manifests.sh`: Calls global kustomization → core-global.yaml
+   - `generate-all-manifests.sh`: Calls run.sh
+
+**Requirements:**
+- Use JSON patches (RFC 6902) not strategic merge
+- Controller manifests: `--webhook-port=0`, `serviceAccountName: default`, no CRDs/webhooks
+- Webhook manifests: Include CRDs, webhooks, Certificate, Issuer, and cert-manager CA injection annotations
+- Target namespace: `capi-webhook-system` for webhook, `cap[provider-prefix]-system` for controller
+- Skip RBAC for both (handled by Palette)
+- Use kustomize v1beta1 format with proper labels
+- Match naming pattern: prefix should be `cap[X]-` where X is provider abbreviation
+- Output files: `core-global.yaml` (webhook), `core-base.yaml` (controller)
+
+**Global kustomization template:**
+```yaml
+namespace: capi-webhook-system
+namePrefix: cap[provider-prefix]-
+
+resources:
+- ../../config/crd
+- ../../config/manager
+- ../../config/webhook
+- ../../config/certmanager
+
+configurations:
+- ../../config/default/kustomizeconfig.yaml
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+labels:
+- includeSelectors: true
+  pairs:
+    cluster.x-k8s.io/provider: infrastructure-[provider]
+patches:
+- path: patch_service_account.yaml
+  target:
+    group: apps
+    kind: Deployment
+    name: controller-manager
+    namespace: system
+    version: v1
+- path: ../../config/default/manager_image_patch.yaml
+  target:
+    group: apps
+    kind: Deployment
+    name: controller-manager
+    version: v1
+- path: ../../config/default/manager_webhook_patch.yaml
+  target:
+    group: apps
+    kind: Deployment
+    name: controller-manager
+    version: v1
+- path: ../../config/default/webhookcainjection_patch.yaml
+
+vars:
+- name: CERTIFICATE_NAMESPACE
+  objref:
+    kind: Certificate
+    group: cert-manager.io
+    version: v1
+    name: serving-cert
+  fieldref:
+    fieldpath: metadata.namespace
+- name: CERTIFICATE_NAME
+  objref:
+    kind: Certificate
+    group: cert-manager.io
+    version: v1
+    name: serving-cert
+  fieldref:
+    fieldpath: metadata.name
+- name: SERVICE_NAMESPACE
+  objref:
+    kind: Service
+    version: v1
+    name: webhook-service
+  fieldref:
+    fieldpath: metadata.namespace
+- name: SERVICE_NAME
+  objref:
+    kind: Service
+    version: v1
+    name: webhook-service
+```
+
+**Expected webhook manifest contents:**
+- Certificate resource: `cap[prefix]-serving-cert` in `capi-webhook-system`
+- Issuer resource: `cap[prefix]-selfsigned-issuer` in `capi-webhook-system`
+- All CRDs have `cert-manager.io/inject-ca-from: capi-webhook-system/cap[prefix]-serving-cert`
+- MutatingWebhookConfiguration has `cert-manager.io/inject-ca-from` annotation
+- ValidatingWebhookConfiguration has `cert-manager.io/inject-ca-from` annotation
+- DNS names in Certificate match webhook service name and namespace
+
+**Provider-specific details to customize:**
+- Replace `[provider-prefix]` with actual prefix (e.g., `capc` for CloudStack)
+- Replace `[provider]` with provider name (e.g., `cloudstack`)
+- Add provider-specific controller flags to patch_service_account.yaml
+- Add any provider-specific patches if needed (like Azure's CRD webhook namespace patches)
+- Ensure config/certmanager and config/default/webhookcainjection_patch.yaml exist
+
 
 

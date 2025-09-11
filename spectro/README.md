@@ -1,117 +1,90 @@
-# Spectro CAPC Manifests
+# CAPC Webhook/Controller Separation
 
-This directory contains manifest generation scripts and configurations for running CAPC (Cluster API Provider CloudStack) components separately as controller-only and webhook-only pods.
+This directory contains the infrastructure to generate separate webhook and controller manifests for the CloudStack provider (CAPC), following the standardized pattern used by all Spectro CAPI providers.
 
 ## Overview
 
-The CAPC application can be run in two modes:
+The same CAPC binary can run in two modes:
+- **Webhook-only mode** (`--webhook-port=9443`): Handles admission webhooks, includes CRDs, runs in `capi-webhook-system`
+- **Controller-only mode** (`--webhook-port=0`): Handles reconciliation only, can be namespace-scoped, uses `serviceAccountName: default`
 
-1. **Controller-only mode** (`--webhook-port=0`): Runs only the reconciliation controllers
-2. **Webhook-only mode** (`--webhook-port=9443`): Runs only the webhook server
+## Quick Start
 
-Both modes use the same codebase and container image, differentiated by the `webhook-port` CLI flag.
-
-## Directory Structure
-
-```
-spectro/
-├── controller/                          # Controller-only manifests
-│   ├── kustomization.yaml              # Kustomize config for controller
-│   ├── namespace.yaml                  # Namespace definition
-│   ├── manager_controller_patch.yaml   # Controller-specific deployment patch
-│   └── kustomizeconfig.yaml           # Kustomize configuration
-├── webhook/                            # Webhook-only manifests
-│   ├── kustomization.yaml              # Kustomize config for webhook (includes CRDs)
-│   ├── namespace.yaml                  # Namespace definition
-│   ├── manager_webhook_patch.yaml      # Webhook-specific deployment patch
-│   └── kustomizeconfig.yaml           # Kustomize configuration
-├── generated/                          # Generated manifest files (created by scripts)
-│   ├── controller-manifests.yaml      # Controller-only manifests
-│   └── webhook-manifests.yaml         # Webhook-only manifests (with CRDs)
-├── generate-controller-manifests.sh   # Script to generate controller manifests
-├── generate-webhook-manifests.sh      # Script to generate webhook manifests
-├── generate-all-manifests.sh          # Script to generate both sets of manifests
-└── README.md                          # This file
-```
-
-## Usage
-
-### Generate All Manifests
-
+Generate both sets of manifests:
 ```bash
+./run.sh
+# Or for more verbose output:
 ./generate-all-manifests.sh
 ```
 
-### Generate Controller-Only Manifests
+## Generated Files
 
-```bash
-./generate-controller-manifests.sh
+- **`generated/core-global.yaml`**: Webhook-only manifests with CRDs
+- **`generated/core-base.yaml`**: Controller-only manifests
+
+## Structure
+
+```
+spectro/
+├── base/                      # Controller-only configuration
+│   ├── kustomization.yaml     # Kustomize config for capc-system namespace
+│   ├── patch_service_account.yaml  # Sets serviceAccountName: default, --webhook-port=0
+│   └── patch_healthcheck.yaml      # Removes health probes
+├── global/                    # Webhook-only configuration  
+│   ├── kustomization.yaml     # Kustomize config for capi-webhook-system namespace
+│   └── patch_service_account.yaml  # Removes serviceAccountName (uses default from manager)
+├── generated/                 # Output directory
+└── run.sh                     # Main generation script
 ```
 
-### Generate Webhook-Only Manifests
 
+## Integration with Palette
+
+- **Global deployment**: Palette deploys `core-global.yaml` to `capi-webhook-system` for webhooks
+- **Namespaced deployment**: Palette deploys `core-base.yaml` to tenant namespaces with `--namespace=$(NAMESPACE)` for isolation
+- **Namespace isolation**: Each controller instance only reconciles objects in its own namespace
+
+## Manual Deployment
+
+### Deploy Webhook Server (Global)
 ```bash
-./generate-webhook-manifests.sh
+kubectl apply -f generated/core-global.yaml
 ```
 
-## Deployment
-
-### Controller-Only Deployment
-
-The controller-only deployment includes:
-- Manager deployment with `--webhook-port=0`
-- RBAC permissions for controllers
-- No webhook configurations
-- No CRDs (should be deployed separately or via webhook deployment)
-
+### Deploy Controller (Namespaced)
 ```bash
-kubectl apply -f generated/controller-manifests.yaml
+kubectl create namespace my-tenant-ns
+kubectl apply -f generated/core-base.yaml -n my-tenant-ns
 ```
 
-### Webhook-Only Deployment
+## Key Features
 
-The webhook-only deployment includes:
-- Manager deployment with `--webhook-port=9443`
-- CRDs (Custom Resource Definitions)
-- Webhook configurations (MutatingWebhookConfiguration and ValidatingWebhookConfiguration)
-- Webhook service
-- No RBAC for controllers
-- No cert-manager configurations (certificates must be managed separately)
+- **✅ Webhook separation**: Webhooks run centrally in `capi-webhook-system`
+- **✅ Namespace isolation**: Controllers only reconcile objects in their namespace
+- **✅ Health probe removal**: Controller-only mode removes health probes that conflict with webhook-port=0
+- **✅ Service account**: Controller uses `serviceAccountName: default` for tenant namespaces
+- **✅ Standardized naming**: Matches AWS (`capa-`) and Azure (`capz-`) patterns with `capc-` prefix
+- **✅ Consistent pattern**: Uses same structure and naming as other Spectro CAPI providers
 
-```bash
-kubectl apply -f generated/webhook-manifests.yaml
-```
+## Validation
 
-## Important Notes
+### Controller Manifests Should Include:
+- `--webhook-port=0` in container args
+- `serviceAccountName: default`
+- No CRDs or webhook configurations
+- Namespace: `capc-system`
 
-1. **RBAC**: Only the controller deployment includes RBAC permissions. The webhook deployment does not include RBAC or cert-manager configurations as requested.
+### Webhook Manifests Should Include:  
+- CRDs and `ValidatingWebhookConfiguration`/`MutatingWebhookConfiguration`
+- All resources in `capi-webhook-system` namespace
+- Webhook services pointing to correct namespace
 
-2. **CRDs**: Custom Resource Definitions are included only in the webhook deployment.
+## Development
 
-3. **Certificates**: The webhook server requires TLS certificates. You need to create a secret named `capc-webhook-service-cert` with the TLS certificate and key:
+When modifying the configuration:
+1. Edit files in `base/` or `global/`
+2. Run `./run.sh` to regenerate manifests
+3. Test both controller and webhook deployments
+4. Verify namespace isolation works correctly
 
-   ```bash
-   kubectl create secret tls capc-webhook-service-cert \
-     --cert=tls.crt \
-     --key=tls.key \
-     -n capc-system
-   ```
-
-4. **Image**: Both deployments use the same container image. Make sure to update the image reference in `config/manager/manager.yaml` or patch files as needed.
-
-5. **Networking**: The webhook service runs on port 9443 and expects the admission controllers to be accessible from the Kubernetes API server.
-
-## Customization
-
-To customize the deployments:
-
-1. Modify the patch files in `controller/` or `webhook/` directories
-2. Update the kustomization.yaml files to add additional resources or patches
-3. Regenerate the manifests using the provided scripts
-
-## Labels and Selectors
-
-- Controller pods use label: `control-plane: capc-controller-manager`
-- Webhook pods use label: `control-plane: capc-webhook-manager`
-
-This allows for separate selection and management of the two types of pods.
+For more details, see `executedSteps.md` which contains the complete implementation guide for applying this pattern to other CAPI providers.

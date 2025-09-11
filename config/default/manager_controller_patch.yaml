@@ -1,3 +1,4 @@
+# This patch is for controller-only mode - adds --webhook-port=0 to disable webhooks
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,14 +7,13 @@ metadata:
 spec:
   template:
     spec:
-      serviceAccountName: default
       containers:
       - name: manager
         args:
         - "--leader-elect"
-        - "--webhook-port=0"
         - "--diagnostics-address=${CAPI_DIAGNOSTICS_ADDRESS:=:8443}"
         - "--insecure-diagnostics=${CAPI_INSECURE_DIAGNOSTICS:=false}"
         - "--cloudstackcluster-concurrency=${CAPC_CLOUDSTACKCLUSTER_CONCURRENCY:=10}"
         - "--cloudstackmachine-concurrency=${CAPC_CLOUDSTACKMACHINE_CONCURRENCY:=10}"
         - "--enable-cloudstack-cks-sync=${CAPC_CLOUDSTACKMACHINE_CKS_SYNC:=false}"
+        - "--webhook-port=0"

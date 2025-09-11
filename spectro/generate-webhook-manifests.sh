@@ -11,14 +11,14 @@ echo "Generating webhook-only manifests..."
 # Create output directory
 mkdir -p "${SCRIPT_DIR}/generated"
 
-# Generate webhook manifests (webhook-port=9443) - includes CRDs
-cd "${SCRIPT_DIR}/webhook"
-kustomize build . > "${SCRIPT_DIR}/generated/webhook-manifests.yaml"
+# Generate webhook manifests
+cd "${SCRIPT_DIR}"
+kustomize build --load-restrictor LoadRestrictionsNone global > "${SCRIPT_DIR}/generated/core-global.yaml"
 
-echo "Webhook-only manifests (with CRDs) generated at: ${SCRIPT_DIR}/generated/webhook-manifests.yaml"
+echo "Webhook-only manifests (with CRDs) generated: ${SCRIPT_DIR}/generated/core-global.yaml"
 echo ""
 echo "To deploy the webhook server:"
-echo "kubectl apply -f ${SCRIPT_DIR}/generated/webhook-manifests.yaml"
+echo "kubectl apply -f ${SCRIPT_DIR}/generated/core-global.yaml"
 echo ""
 echo "Note: You may need to create TLS certificates for the webhook service."
 echo "The webhook expects certificates at /tmp/k8s-webhook-server/serving-certs/ in the container."
