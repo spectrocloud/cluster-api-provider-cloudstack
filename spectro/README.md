@@ -60,6 +60,7 @@ spectro/
 
 The controller-only deployment includes:
 - Manager deployment with `--webhook-port=0`
+- No serviceAccountName field (uses default Kubernetes pod service account)
 - RBAC permissions for controllers
 - No webhook configurations
 - No CRDs (should be deployed separately or via webhook deployment)
@@ -72,11 +73,13 @@ kubectl apply -f generated/controller-manifests.yaml
 
 The webhook-only deployment includes:
 - Manager deployment with `--webhook-port=9443`
+- No serviceAccountName field (uses default Kubernetes pod service account)
 - CRDs (Custom Resource Definitions)
 - Webhook configurations (MutatingWebhookConfiguration and ValidatingWebhookConfiguration)
 - Webhook service
+- Cert-manager resources (Issuer and Certificate)
+- CA injection annotations for webhook configurations
 - No RBAC for controllers
-- No cert-manager configurations (certificates must be managed separately)
 
 ```bash
 kubectl apply -f generated/webhook-manifests.yaml
@@ -84,18 +87,11 @@ kubectl apply -f generated/webhook-manifests.yaml
 
 ## Important Notes
 
-1. **RBAC**: Only the controller deployment includes RBAC permissions. The webhook deployment does not include RBAC or cert-manager configurations as requested.
+1. **RBAC and Service Accounts**: Only the controller deployment includes RBAC permissions. Both deployments have no serviceAccountName field, relying on Kubernetes default pod service accounts. The webhook deployment does not include RBAC but includes cert-manager configurations for automatic certificate management.
 
 2. **CRDs**: Custom Resource Definitions are included only in the webhook deployment.
 
-3. **Certificates**: The webhook server requires TLS certificates. You need to create a secret named `capc-webhook-service-cert` with the TLS certificate and key:
-
-   ```bash
-   kubectl create secret tls capc-webhook-service-cert \
-     --cert=tls.crt \
-     --key=tls.key \
-     -n capc-system
-   ```
+3. **Certificates**: The webhook deployment includes cert-manager resources that automatically generate and manage TLS certificates. The Certificate resource will create a secret named `capc-webhook-service-cert` with the TLS certificate and key.
 
 4. **Image**: Both deployments use the same container image. Make sure to update the image reference in `config/manager/manager.yaml` or patch files as needed.
 

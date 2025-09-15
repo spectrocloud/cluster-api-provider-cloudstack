@@ -6,7 +6,6 @@ metadata:
 spec:
   template:
     spec:
-      serviceAccountName: default
       containers:
       - name: manager
         args:
