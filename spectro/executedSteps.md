@@ -49,13 +49,12 @@ Use this single prompt:
         - CERTIFICATE_NAME: from Service/webhook-service metadata.name
         - SERVICE_NAMESPACE: from Service/webhook-service metadata.namespace
         - SERVICE_NAME: from Service/webhook-service metadata.name
-      - configurations: [kustomizeconfig.yaml, certmanager_kustomizeconfig.yaml] (local files)
+      - configurations: [kustomizeconfig.yaml] (cert-manager config auto-included from resources)
       - Add YAML patch to remove serviceAccountName field
     - kustomizeconfig.yaml:
       - nameReference: Service v1 → webhooks/clientConfig/service/name in MutatingWebhookConfiguration and ValidatingWebhookConfiguration
       - namespace mapping: webhooks/clientConfig/service/namespace (create: true) in both webhook configurations
       - varReference: metadata/annotations
-    - certmanager_kustomizeconfig.yaml: Copy of ../../config/certmanager/kustomizeconfig.yaml for cert-manager variable substitution
     - manager_webhook_patch.yaml:
       - Label the Deployment/pod template with control-plane: capc-controller-manager (FIXED: was capc-webhook-manager)
       - Remove serviceAccountName field entirely (uses Kubernetes default behavior)

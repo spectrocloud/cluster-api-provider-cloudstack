@@ -49,7 +49,6 @@ vars:
 
 configurations:
   - kustomizeconfig.yaml
-  - certmanager_kustomizeconfig.yaml
 patches:
 - path: manager_webhook_patch.yaml
 - path: webhook_ca_injection_patch.yaml
