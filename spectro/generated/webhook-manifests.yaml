@@ -3115,7 +3115,7 @@ spec:
       - name: cert
         secret:
           defaultMode: 420
-          secretName: capc-webhook-service-cert
+          secretName: capc-webhook-server-cert
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -3131,7 +3131,7 @@ spec:
   issuerRef:
     kind: Issuer
     name: capc-selfsigned-issuer
-  secretName: capc-webhook-service-cert
+  secretName: capc-webhook-server-cert
 ---
 apiVersion: cert-manager.io/v1
 kind: Issuer

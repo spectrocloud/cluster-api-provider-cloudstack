@@ -50,6 +50,7 @@ configurations:
 patches:
 - path: manager_webhook_patch.yaml
 - path: webhook_ca_injection_patch.yaml
+- path: certificate_secretname_patch.yaml
 - target:
     kind: Deployment
     name: controller-manager

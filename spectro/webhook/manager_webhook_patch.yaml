@@ -30,4 +30,4 @@ spec:
       - name: cert
         secret:
           defaultMode: 420
-          secretName: capc-webhook-service-cert
+          secretName: capc-webhook-server-cert
