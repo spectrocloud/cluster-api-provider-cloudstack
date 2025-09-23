@@ -81,7 +81,6 @@ spec:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
-      serviceAccountName: default
       terminationGracePeriodSeconds: 10
       tolerations:
       - effect: NoSchedule
