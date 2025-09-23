@@ -5,6 +5,9 @@
 # field above.
 namePrefix: capc-
 
+# Set namespace for all resources
+namespace: capc-system
+
 # Labels to add to all resources and selectors.
 labels:
 - pairs:
@@ -13,7 +16,11 @@ labels:
 resources:
   - ../../config/manager
 patches:
-- path: manager_controller_patch.yaml
+- target:
+    kind: Deployment
+    name: controller-manager
+    namespace: system
+  path: manager_controller_patch.yaml
 - target:
     kind: Deployment
     name: controller-manager
