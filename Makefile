@@ -227,10 +227,9 @@ undeploy: $(KUSTOMIZE) ## Undeploy controller from the K8s cluster specified in 
 # Using a flag file here as docker build doesn't produce a target file.
 DOCKER_BUILD_INPUTS=$(MANAGER_BIN_INPUTS) Dockerfile
 .PHONY: docker-build
-docker-build: generate-deepcopy generate-conversion .dockerflag.mk ## Build docker image containing the controller manager.
-.dockerflag.mk: $(DOCKER_BUILD_INPUTS)
-	docker buildx build --load --platform linux/${ARCH} ${BUILD_ARGS} --build-arg ARCH=$(ARCH) -t ${IMG} .
-	@touch .dockerflag.mk
+docker-build: generate-deepcopy generate-conversion ## Build docker image containing the controller manager.
+	docker buildx build --load --platform linux/${ARCH} ${BUILD_ARGS} --build-arg ARCH=$(ARCH) . -t $(CONTROLLER_IMG)-$(ARCH):$(TAG)
+	@echo $(CONTROLLER_IMG)-$(ARCH):$(TAG)
 
 .PHONY: docker-build-all ## Build all the architecture docker images
 docker-build-all: $(addprefix docker-build-,$(ALL_ARCH))
@@ -244,10 +243,24 @@ docker-push: .dockerflag.mk ## Push docker image with the manager.
 
 .PHONY: docker-push-all ## Push all the architecture docker images
 docker-push-all: $(addprefix docker-push-,$(ALL_ARCH))
-	$(MAKE) docker-push
+	$(MAKE) docker-push-core-manifest
 
 docker-push-%:
 	$(MAKE) ARCH=$* docker-push
+
+.PHONY: docker-push-core-manifest
+docker-push-core-manifest: ## Push the fat manifest docker image.
+	## Minimum docker version 18.06.0 is required for creating and pushing manifest images.
+	$(MAKE) docker-push-manifest CONTROLLER_IMAGE=$(CONTROLLER_IMG) MANIFEST_FILE=$(MANIFEST_FILE)
+
+.PHONY: docker-push-manifest
+docker-push-manifest: ## Push the manifest image
+	@# Extract the actual image digests from the architecture-specific manifest lists
+	@amd64_digest=$$(docker buildx imagetools inspect ${CONTROLLER_IMAGE}-amd64:${TAG} --format "{{json .}}" | jq -r '.manifest.manifests[] | select(.platform.architecture=="amd64") | .digest'); \
+	arm64_digest=$$(docker buildx imagetools inspect ${CONTROLLER_IMAGE}-arm64:${TAG} --format "{{json .}}" | jq -r '.manifest.manifests[] | select(.platform.architecture=="arm64") | .digest'); \
+	docker buildx imagetools create -t ${CONTROLLER_IMAGE}:${TAG} \
+		${CONTROLLER_IMAGE}-amd64@$$amd64_digest \
+		${CONTROLLER_IMAGE}-arm64@$$arm64_digest
 
 ##@ Tilt
 ## --------------------------------------
