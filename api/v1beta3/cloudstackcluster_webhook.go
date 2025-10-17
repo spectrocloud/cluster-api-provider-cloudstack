@@ -97,7 +97,7 @@ func (r *CloudStackCluster) ValidateCreate(_ context.Context, obj runtime.Object
 }
 
 // ValidateUpdate implements webhook.Validator so a webhook will be registered for the type
-func (r *CloudStackCluster) ValidateUpdate(ctx context.Context, old runtime.Object, new runtime.Object) (admission.Warnings, error) {
+func (r *CloudStackCluster) ValidateUpdate(_ context.Context, old runtime.Object, new runtime.Object) (admission.Warnings, error) {
 	r, ok := new.(*CloudStackCluster)
 	if !ok {
 		return nil, fmt.Errorf("expected *CloudStackCluster, got %T", new)
@@ -167,7 +167,7 @@ func FailureDomainsEqual(fd1, fd2 CloudStackFailureDomainSpec) bool {
 }
 
 // ValidateDelete implements webhook.Validator so a webhook will be registered for the type
-func (r *CloudStackCluster) ValidateDelete(_ context.Context, obj runtime.Object) (admission.Warnings, error) {
+func (r *CloudStackCluster) ValidateDelete(_ context.Context, _ runtime.Object) (admission.Warnings, error) {
 	cloudstackclusterlog.V(1).Info("entered validate delete webhook", "api resource name", r.Name)
 	// No deletion validations.  Deletion webhook not enabled.
 	return nil, nil
