@@ -56,7 +56,7 @@ ifeq ($(FIPS_ENABLE),yes)
   RELEASE_LOC := release-fips
 endif
 
-SPECTRO_VERSION ?= 4.7.0-dev
+SPECTRO_VERSION ?= 4.8.0-dev
 TAG ?= v0.6.1-spectro-${SPECTRO_VERSION}
 ARCH ?= amd64
 ALL_ARCH = amd64 arm64

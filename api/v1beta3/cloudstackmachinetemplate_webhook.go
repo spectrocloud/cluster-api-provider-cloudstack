@@ -17,6 +17,7 @@ limitations under the License.
 package v1beta3
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 	"strings"
@@ -37,25 +38,36 @@ var cloudstackmachinetemplatelog = logf.Log.WithName("cloudstackmachinetemplate-
 func (r *CloudStackMachineTemplate) SetupWebhookWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewWebhookManagedBy(mgr).
 		For(r).
+		WithDefaulter(r). // registers webhook.CustomDefaulter
+		WithValidator(r). // registers webhook.CustomValidator
 		Complete()
 }
 
 // +kubebuilder:webhook:path=/mutate-infrastructure-cluster-x-k8s-io-v1beta3-cloudstackmachinetemplate,mutating=true,failurePolicy=fail,sideEffects=None,groups=infrastructure.cluster.x-k8s.io,resources=cloudstackmachinetemplates,verbs=create;update,versions=v1beta3,name=mcloudstackmachinetemplate.kb.io,admissionReviewVersions=v1;v1beta1
 
-var _ webhook.Defaulter = &CloudStackMachineTemplate{}
+var _ webhook.CustomDefaulter = &CloudStackMachineTemplate{}
 
 // Default implements webhook.Defaulter so a webhook will be registered for the type
-func (r *CloudStackMachineTemplate) Default() {
+func (r *CloudStackMachineTemplate) Default(_ context.Context, obj runtime.Object) error {
+	r, ok := obj.(*CloudStackMachineTemplate)
+	if !ok {
+		return fmt.Errorf("expected *CloudStackMachineTemplate, got %T", obj)
+	}
 	cloudstackmachinetemplatelog.V(1).Info("entered default setting webhook", "api resource name", r.Name)
 	// No defaulted values supported yet.
+	return nil
 }
 
 // +kubebuilder:webhook:path=/validate-infrastructure-cluster-x-k8s-io-v1beta3-cloudstackmachinetemplate,mutating=false,failurePolicy=fail,sideEffects=None,groups=infrastructure.cluster.x-k8s.io,resources=cloudstackmachinetemplates,verbs=create;update,versions=v1beta3,name=vcloudstackmachinetemplate.kb.io,admissionReviewVersions=v1;v1beta1
 
-var _ webhook.Validator = &CloudStackMachineTemplate{}
+var _ webhook.CustomValidator = &CloudStackMachineTemplate{}
 
 // ValidateCreate implements webhook.Validator so a webhook will be registered for the type
-func (r *CloudStackMachineTemplate) ValidateCreate() (admission.Warnings, error) {
+func (r *CloudStackMachineTemplate) ValidateCreate(_ context.Context, obj runtime.Object) (admission.Warnings, error) {
+	r, ok := obj.(*CloudStackMachineTemplate)
+	if !ok {
+		return nil, fmt.Errorf("expected *CloudStackMachineTemplate, got %T", obj)
+	}
 	cloudstackmachinetemplatelog.V(1).Info("entered validate create webhook", "api resource name", r.Name)
 
 	var errorList field.ErrorList
@@ -80,7 +92,11 @@ func (r *CloudStackMachineTemplate) ValidateCreate() (admission.Warnings, error)
 }
 
 // ValidateUpdate implements webhook.Validator so a webhook will be registered for the type
-func (r *CloudStackMachineTemplate) ValidateUpdate(old runtime.Object) (admission.Warnings, error) {
+func (r *CloudStackMachineTemplate) ValidateUpdate(_ context.Context, old runtime.Object, new runtime.Object) (admission.Warnings, error) {
+	r, ok := new.(*CloudStackMachineTemplate)
+	if !ok {
+		return nil, fmt.Errorf("expected *CloudStackMachineTemplate, got %T", new)
+	}
 	cloudstackmachinetemplatelog.V(1).Info("entered validate update webhook", "api resource name", r.Name)
 
 	oldMachineTemplate, ok := old.(*CloudStackMachineTemplate)
@@ -111,7 +127,7 @@ func (r *CloudStackMachineTemplate) ValidateUpdate(old runtime.Object) (admissio
 }
 
 // ValidateDelete implements webhook.Validator so a webhook will be registered for the type
-func (r *CloudStackMachineTemplate) ValidateDelete() (admission.Warnings, error) {
+func (r *CloudStackMachineTemplate) ValidateDelete(_ context.Context, _ runtime.Object) (admission.Warnings, error) {
 	cloudstackmachinetemplatelog.V(1).Info("entered validate delete webhook", "api resource name", r.Name)
 	// No deletion validations.  Deletion webhook not enabled.
 	return nil, nil
