@@ -47,7 +47,7 @@ func (r *CloudStackMachine) SetupWebhookWithManager(mgr ctrl.Manager) error {
 var _ webhook.CustomDefaulter = &CloudStackMachine{}
 
 // Default implements webhook.Defaulter so a webhook will be registered for the type
-func (r *CloudStackMachine) Default(ctx context.Context, obj runtime.Object) error {
+func (r *CloudStackMachine) Default(_ context.Context, obj runtime.Object) error {
 	r, ok := obj.(*CloudStackMachine)
 	if !ok {
 		return fmt.Errorf("expected *CloudStackCluster, got %T", obj)
@@ -62,7 +62,7 @@ func (r *CloudStackMachine) Default(ctx context.Context, obj runtime.Object) err
 var _ webhook.CustomValidator = &CloudStackMachine{}
 
 // ValidateCreate implements webhook.Validator so a webhook will be registered for the type
-func (r *CloudStackMachine) ValidateCreate(ctx context.Context, obj runtime.Object) (admission.Warnings, error) {
+func (r *CloudStackMachine) ValidateCreate(_ context.Context, obj runtime.Object) (admission.Warnings, error) {
 	r, ok := obj.(*CloudStackMachine)
 	if !ok {
 		return nil, fmt.Errorf("expected *CloudStackMachine, got %T", obj)
@@ -81,7 +81,7 @@ func (r *CloudStackMachine) ValidateCreate(ctx context.Context, obj runtime.Obje
 }
 
 // ValidateUpdate implements webhook.Validator so a webhook will be registered for the type
-func (r *CloudStackMachine) ValidateUpdate(ctx context.Context, old runtime.Object, new runtime.Object) (admission.Warnings, error) {
+func (r *CloudStackMachine) ValidateUpdate(_ context.Context, old runtime.Object, new runtime.Object) (admission.Warnings, error) {
 	r, ok := new.(*CloudStackMachine)
 	if !ok {
 		return nil, fmt.Errorf("expected *CloudStackMachine, got %T", new)
@@ -119,7 +119,7 @@ func (r *CloudStackMachine) ValidateUpdate(ctx context.Context, old runtime.Obje
 }
 
 // ValidateDelete implements webhook.Validator so a webhook will be registered for the type
-func (r *CloudStackMachine) ValidateDelete(ctx context.Context, obj runtime.Object) (admission.Warnings, error) {
+func (r *CloudStackMachine) ValidateDelete(_ context.Context, _ runtime.Object) (admission.Warnings, error) {
 	cloudstackmachinelog.V(1).Info("entered validate delete webhook", "api resource name", r.Name)
 	// No deletion validations.  Deletion webhook not enabled.
 	return nil, nil

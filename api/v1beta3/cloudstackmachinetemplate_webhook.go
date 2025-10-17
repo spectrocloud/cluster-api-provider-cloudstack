@@ -48,7 +48,7 @@ func (r *CloudStackMachineTemplate) SetupWebhookWithManager(mgr ctrl.Manager) er
 var _ webhook.CustomDefaulter = &CloudStackMachineTemplate{}
 
 // Default implements webhook.Defaulter so a webhook will be registered for the type
-func (r *CloudStackMachineTemplate) Default(ctx context.Context, obj runtime.Object) error {
+func (r *CloudStackMachineTemplate) Default(_ context.Context, obj runtime.Object) error {
 	r, ok := obj.(*CloudStackMachineTemplate)
 	if !ok {
 		return fmt.Errorf("expected *CloudStackMachineTemplate, got %T", obj)
@@ -63,7 +63,7 @@ func (r *CloudStackMachineTemplate) Default(ctx context.Context, obj runtime.Obj
 var _ webhook.CustomValidator = &CloudStackMachineTemplate{}
 
 // ValidateCreate implements webhook.Validator so a webhook will be registered for the type
-func (r *CloudStackMachineTemplate) ValidateCreate(ctx context.Context, obj runtime.Object) (admission.Warnings, error) {
+func (r *CloudStackMachineTemplate) ValidateCreate(_ context.Context, obj runtime.Object) (admission.Warnings, error) {
 	r, ok := obj.(*CloudStackMachineTemplate)
 	if !ok {
 		return nil, fmt.Errorf("expected *CloudStackMachineTemplate, got %T", obj)
@@ -92,7 +92,7 @@ func (r *CloudStackMachineTemplate) ValidateCreate(ctx context.Context, obj runt
 }
 
 // ValidateUpdate implements webhook.Validator so a webhook will be registered for the type
-func (r *CloudStackMachineTemplate) ValidateUpdate(ctx context.Context, old runtime.Object, new runtime.Object) (admission.Warnings, error) {
+func (r *CloudStackMachineTemplate) ValidateUpdate(_ context.Context, old runtime.Object, new runtime.Object) (admission.Warnings, error) {
 	r, ok := new.(*CloudStackMachineTemplate)
 	if !ok {
 		return nil, fmt.Errorf("expected *CloudStackMachineTemplate, got %T", new)
@@ -127,7 +127,7 @@ func (r *CloudStackMachineTemplate) ValidateUpdate(ctx context.Context, old runt
 }
 
 // ValidateDelete implements webhook.Validator so a webhook will be registered for the type
-func (r *CloudStackMachineTemplate) ValidateDelete(ctx context.Context, obj runtime.Object) (admission.Warnings, error) {
+func (r *CloudStackMachineTemplate) ValidateDelete(_ context.Context, obj runtime.Object) (admission.Warnings, error) {
 	cloudstackmachinetemplatelog.V(1).Info("entered validate delete webhook", "api resource name", r.Name)
 	// No deletion validations.  Deletion webhook not enabled.
 	return nil, nil
