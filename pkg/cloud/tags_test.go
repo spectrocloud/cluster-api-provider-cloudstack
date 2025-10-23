@@ -156,6 +156,10 @@ var _ = ginkgo.Describe("Tag Unit Tests", func() {
 			createdByCAPCResponse := &csapi.ListTagsResponse{Tags: []*csapi.Tag{{Key: cloud.CreatedByCAPCTagName, Value: "1"}}}
 			rtlp := &csapi.ListTagsParams{}
 			ctp := &csapi.CreateTagsParams{}
+			// First GetTags call in IsCapcManaged
+			rs.EXPECT().NewListTagsParams().Return(rtlp)
+			rs.EXPECT().ListTags(rtlp).Return(createdByCAPCResponse, nil)
+			// Second GetTags call in removeOldClusterTags
 			rs.EXPECT().NewListTagsParams().Return(rtlp)
 			rs.EXPECT().ListTags(rtlp).Return(createdByCAPCResponse, nil)
 			rs.EXPECT().NewCreateTagsParams(gomock.Any(), gomock.Any(), gomock.Any()).Return(ctp)

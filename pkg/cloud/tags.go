@@ -71,12 +71,12 @@ func (c *client) AddClusterTag(rType ResourceType, rID string, csCluster *infrav
 		return err
 	} else if managedByCAPC {
 		ClusterTagName := generateClusterTagName(csCluster)
-		
+
 		// Remove old cluster tags before adding new one to prevent dual-tagging during pivot
 		if err := c.removeOldClusterTags(rType, rID, ClusterTagName); err != nil {
 			return errors.Wrapf(err, "removing old cluster tags from %s %s", rType, rID)
 		}
-		
+
 		return c.AddTags(rType, rID, map[string]string{ClusterTagName: "1"})
 	}
 	return nil
@@ -177,7 +177,7 @@ func (c *client) removeOldClusterTags(rType ResourceType, rID string, currentClu
 	if err != nil {
 		return errors.Wrapf(err, "getting tags for %s %s", rType, rID)
 	}
-	
+
 	oldClusterTags := make(map[string]string)
 	for tagName, tagValue := range tags {
 		// Find cluster tags that are NOT the current cluster's tag
@@ -185,14 +185,14 @@ func (c *client) removeOldClusterTags(rType ResourceType, rID string, currentClu
 			oldClusterTags[tagName] = tagValue
 		}
 	}
-	
+
 	// Delete old cluster tags if any exist
 	if len(oldClusterTags) > 0 {
 		if err := c.DeleteTags(rType, rID, oldClusterTags); err != nil {
 			return errors.Wrapf(err, "deleting old cluster tags %v from %s %s", oldClusterTags, rType, rID)
 		}
 	}
-	
+
 	return nil
 }
 
