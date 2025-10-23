@@ -65,11 +65,18 @@ func (c *client) IsCapcManaged(resourceType ResourceType, resourceID string) (bo
 }
 
 // AddClusterTag adds cluster tag to a resource. This tag indicates the resource is used by a given the cluster.
+// If old cluster tags exist (from previous cluster UIDs), they are removed first to prevent dual-tagging.
 func (c *client) AddClusterTag(rType ResourceType, rID string, csCluster *infrav1.CloudStackCluster) error {
 	if managedByCAPC, err := c.IsCapcManaged(rType, rID); err != nil {
 		return err
 	} else if managedByCAPC {
 		ClusterTagName := generateClusterTagName(csCluster)
+		
+		// Remove old cluster tags before adding new one to prevent dual-tagging during pivot
+		if err := c.removeOldClusterTags(rType, rID, ClusterTagName); err != nil {
+			return errors.Wrapf(err, "removing old cluster tags from %s %s", rType, rID)
+		}
+		
 		return c.AddTags(rType, rID, map[string]string{ClusterTagName: "1"})
 	}
 	return nil
@@ -160,6 +167,32 @@ func (c *client) DeleteTags(resourceType ResourceType, resourceID string, tagsTo
 			}
 		}
 	}
+	return nil
+}
+
+// removeOldClusterTags removes any cluster tags that don't match the current cluster UID.
+// This prevents dual-tagging when a resource is moved during pivot and gets a new cluster UID.
+func (c *client) removeOldClusterTags(rType ResourceType, rID string, currentClusterTagName string) error {
+	tags, err := c.GetTags(rType, rID)
+	if err != nil {
+		return errors.Wrapf(err, "getting tags for %s %s", rType, rID)
+	}
+	
+	oldClusterTags := make(map[string]string)
+	for tagName, tagValue := range tags {
+		// Find cluster tags that are NOT the current cluster's tag
+		if strings.HasPrefix(tagName, ClusterTagNamePrefix) && tagName != currentClusterTagName {
+			oldClusterTags[tagName] = tagValue
+		}
+	}
+	
+	// Delete old cluster tags if any exist
+	if len(oldClusterTags) > 0 {
+		if err := c.DeleteTags(rType, rID, oldClusterTags); err != nil {
+			return errors.Wrapf(err, "deleting old cluster tags %v from %s %s", oldClusterTags, rType, rID)
+		}
+	}
+	
 	return nil
 }
 
