@@ -140,6 +140,13 @@ func (r *CloudStackClusterReconciliationRunner) SetFailureDomainsStatusMap() (ct
 // ReconcileDelete cleans up resources used by the cluster and finally removes the CloudStackCluster's finalizers.
 func (r *CloudStackClusterReconciliationRunner) ReconcileDelete() (ctrl.Result, error) {
 	r.Log.Info("Deleting CloudStackCluster.")
+
+	// Wait for CKS cluster cleanup to complete before deleting FailureDomains
+	const cksClusterFinalizer = "ckscluster.infrastructure.cluster.x-k8s.io"
+	if controllerutil.ContainsFinalizer(r.ReconciliationSubject, cksClusterFinalizer) {
+		return r.RequeueWithMessage("Waiting for CKS cluster cleanup to complete before deleting FailureDomains.")
+	}
+
 	if res, err := r.GetFailureDomains(r.FailureDomains)(); r.ShouldReturn(res, err) {
 		return res, err
 	}
