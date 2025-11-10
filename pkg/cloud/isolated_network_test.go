@@ -105,10 +105,19 @@ var _ = ginkgo.Describe("Network", func() {
 					Return(&csapi.CreateEgressFirewallRuleResponse{}, nil))
 
 			// Will add cluster tag once to Network and once to PublicIP.
+			// Each AddClusterTag calls GetTags twice (IsCapcManaged + removeOldClusterTags)
 			createdByResponse := &csapi.ListTagsResponse{Tags: []*csapi.Tag{{Key: cloud.CreatedByCAPCTagName, Value: "1"}}}
 			gomock.InOrder(
+				// Network: IsCapcManaged GetTags
 				rs.EXPECT().NewListTagsParams().Return(&csapi.ListTagsParams{}),
 				rs.EXPECT().ListTags(gomock.Any()).Return(createdByResponse, nil),
+				// Network: removeOldClusterTags GetTags
+				rs.EXPECT().NewListTagsParams().Return(&csapi.ListTagsParams{}),
+				rs.EXPECT().ListTags(gomock.Any()).Return(createdByResponse, nil),
+				// PublicIP: IsCapcManaged GetTags
+				rs.EXPECT().NewListTagsParams().Return(&csapi.ListTagsParams{}),
+				rs.EXPECT().ListTags(gomock.Any()).Return(createdByResponse, nil),
+				// PublicIP: removeOldClusterTags GetTags
 				rs.EXPECT().NewListTagsParams().Return(&csapi.ListTagsParams{}),
 				rs.EXPECT().ListTags(gomock.Any()).Return(createdByResponse, nil))
 
@@ -252,9 +261,14 @@ var _ = ginkgo.Describe("Network", func() {
 			aip := &csapi.AssociateIpAddressParams{}
 			as.EXPECT().NewAssociateIpAddressParams().Return(aip)
 			as.EXPECT().AssociateIpAddress(aip).Return(&csapi.AssociateIpAddressResponse{}, nil)
-			// Will add cluster tag once to Network and once to PublicIP.
+			// Will add cluster tag once to PublicIP
+			// Each AddClusterTag calls GetTags twice (IsCapcManaged + removeOldClusterTags)
 			createdByResponse := &csapi.ListTagsResponse{Tags: []*csapi.Tag{{Key: cloud.CreatedByCAPCTagName, Value: "1"}}}
 			gomock.InOrder(
+				// PublicIP: IsCapcManaged GetTags
+				rs.EXPECT().NewListTagsParams().Return(&csapi.ListTagsParams{}),
+				rs.EXPECT().ListTags(gomock.Any()).Return(createdByResponse, nil),
+				// PublicIP: removeOldClusterTags GetTags
 				rs.EXPECT().NewListTagsParams().Return(&csapi.ListTagsParams{}),
 				rs.EXPECT().ListTags(gomock.Any()).Return(createdByResponse, nil))
 
