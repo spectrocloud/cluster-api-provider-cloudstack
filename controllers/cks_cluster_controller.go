@@ -91,19 +91,25 @@ func (r *CksClusterReconciliationRunner) Reconcile() (res ctrl.Result, reterr er
 
 // ReconcileDelete cleans up resources used by the cluster and finally removes the CloudStackCluster's finalizers.
 func (r *CksClusterReconciliationRunner) ReconcileDelete() (ctrl.Result, error) {
-	if r.ReconciliationSubject.Status.CloudStackClusterID != "" {
+	// Only attempt CKS deletion if SyncWithACS was enabled and CloudStackClusterID is set
+	if r.CSCluster.Spec.SyncWithACS != nil && *r.CSCluster.Spec.SyncWithACS && r.ReconciliationSubject.Status.CloudStackClusterID != "" {
 		if len(r.FailureDomains.Items) == 0 {
-			return ctrl.Result{}, fmt.Errorf("no failure domains found")
+			return ctrl.Result{}, fmt.Errorf("cannot delete CKS cluster: no failure domains found (CloudStackClusterID: %s)", r.ReconciliationSubject.Status.CloudStackClusterID)
 		}
+
 		res, err := r.AsFailureDomainUser(&r.FailureDomains.Items[0].Spec)()
 		if r.ShouldReturn(res, err) {
 			return res, err
 		}
+
+		r.Log.Info("Deleting CKS cluster from CloudStack", "CloudStackClusterID", r.ReconciliationSubject.Status.CloudStackClusterID)
 		err = r.CSUser.DeleteCksCluster(r.ReconciliationSubject)
 		if err != nil && !strings.Contains(err.Error(), " not found") {
 			return r.RequeueWithMessage(fmt.Sprintf("Deleting cks cluster on CloudStack failed. error: %s", err.Error()))
 		}
+		r.Log.Info("Successfully deleted CKS cluster from CloudStack", "CloudStackClusterID", r.ReconciliationSubject.Status.CloudStackClusterID)
 	}
+
 	controllerutil.RemoveFinalizer(r.ReconciliationSubject, CksClusterFinalizer)
 	return ctrl.Result{}, nil
 }

@@ -53,15 +53,18 @@ func (c *client) GetOrCreateCksCluster(cluster *clusterv1.Cluster, csCluster *in
 	if csCluster.Status.CloudStackClusterID != "" {
 		externalManagedCluster, count, err := c.cs.Kubernetes.GetKubernetesClusterByID(csCluster.Status.CloudStackClusterID, withExternalManaged(), cloudstack.WithProject(c.user.Project.ID))
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to get CKS cluster by ID %s: %w", csCluster.Status.CloudStackClusterID, err)
 		} else if count > 0 {
 			csCluster.Status.CloudStackClusterID = externalManagedCluster.Id
 			return nil
 		}
+		// Cluster ID is set in status but not found in CloudStack
+		// This could mean the cluster was deleted externally or doesn't have ExternalManaged type
+		return fmt.Errorf("CKS cluster with ID %s not found in CloudStack (expected ExternalManaged type)", csCluster.Status.CloudStackClusterID)
 	}
 
 	// Check if a cluster exists with the same name
-	clusterName := fmt.Sprintf("%s - %s - %s", cluster.GetName(), csCluster.GetName(), csCluster.GetUID())
+	clusterName := cluster.GetName()
 	externalManagedCluster, count, err := c.cs.Kubernetes.GetKubernetesClusterByName(clusterName, withExternalManaged(), cloudstack.WithProject(c.user.Project.ID))
 	if err != nil && !strings.Contains(err.Error(), "No match found for ") {
 		return err
@@ -81,7 +84,7 @@ func (c *client) GetOrCreateCksCluster(cluster *clusterv1.Cluster, csCluster *in
 			}
 		}
 		// NewCreateKubernetesClusterParams(description string, kubernetesversionid string, name string, serviceofferingid string, size int64, zoneid string) *CreateKubernetesClusterParams
-		params := c.cs.Kubernetes.NewCreateKubernetesClusterParams(fmt.Sprintf("%s managed by CAPC", clusterName), "", clusterName, "", 0, fd.Zone.ID)
+		params := c.cs.Kubernetes.NewCreateKubernetesClusterParams(fmt.Sprintf("Cluster %s managed by CAPC", clusterName), "", clusterName, "", 0, fd.Zone.ID)
 
 		setIfNotEmpty(c.user.Project.ID, params.SetProjectid)
 		setIfNotEmpty(accountName, params.SetAccount)
