@@ -57,11 +57,10 @@ func (c *client) GetOrCreateCksCluster(cluster *clusterv1.Cluster, csCluster *in
 		} else if count > 0 {
 			csCluster.Status.CloudStackClusterID = externalManagedCluster.Id
 			return nil
-		} else {
-			// Cluster ID is set in status but not found in CloudStack
-			// This could mean the cluster was deleted externally or doesn't have ExternalManaged type
-			return fmt.Errorf("CKS cluster with ID %s not found in CloudStack (expected ExternalManaged type)", csCluster.Status.CloudStackClusterID)
 		}
+		// Cluster ID is set in status but not found in CloudStack
+		// This could mean the cluster was deleted externally or doesn't have ExternalManaged type
+		return fmt.Errorf("CKS cluster with ID %s not found in CloudStack (expected ExternalManaged type)", csCluster.Status.CloudStackClusterID)
 	}
 
 	// Check if a cluster exists with the same name
