@@ -42,13 +42,13 @@ jobs:
         with:
           registry: ${{ secrets.REGISTRY_URL }}
           username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+          password: ${{ secrets.GCS_SERVICE_ACCOUNT_JSON }}
       - name: Login to dev private registry
         uses: docker/login-action@v1
         with:
           registry: ${{ secrets.DEV_REGISTRY_URL }}
           username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+          password: ${{ secrets.GCS_SERVICE_ACCOUNT_JSON }}
       - name: Build Image
         env:
           REGISTRY: ${{ env.LEGACY_REGISTRY }}
