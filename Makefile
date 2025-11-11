@@ -230,6 +230,7 @@ DOCKER_BUILD_INPUTS=$(MANAGER_BIN_INPUTS) Dockerfile
 docker-build: generate-deepcopy generate-conversion ## Build docker image containing the controller manager.
 	docker buildx build --load --platform linux/${ARCH} ${BUILD_ARGS} --build-arg ARCH=$(ARCH) . -t $(CONTROLLER_IMG)-$(ARCH):$(TAG)
 	@echo $(CONTROLLER_IMG)-$(ARCH):$(TAG)
+	@touch .dockerflag.mk
 
 .PHONY: docker-build-all ## Build all the architecture docker images
 docker-build-all: $(addprefix docker-build-,$(ALL_ARCH))
