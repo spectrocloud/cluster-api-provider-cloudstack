@@ -256,12 +256,10 @@ docker-push-core-manifest: ## Push the fat manifest docker image.
 
 .PHONY: docker-push-manifest
 docker-push-manifest: ## Push the manifest image
-	@# Extract the actual image digests from the architecture-specific manifest lists
-	@amd64_digest=$$(docker buildx imagetools inspect ${CONTROLLER_IMAGE}-amd64:${TAG} --format "{{json .}}" | jq -r '.manifest.manifests[] | select(.platform.architecture=="amd64") | .digest'); \
-	arm64_digest=$$(docker buildx imagetools inspect ${CONTROLLER_IMAGE}-arm64:${TAG} --format "{{json .}}" | jq -r '.manifest.manifests[] | select(.platform.architecture=="arm64") | .digest'); \
+	@# Create multi-platform manifest from architecture-specific images
 	docker buildx imagetools create -t ${CONTROLLER_IMAGE}:${TAG} \
-		${CONTROLLER_IMAGE}-amd64@$$amd64_digest \
-		${CONTROLLER_IMAGE}-arm64@$$arm64_digest
+		${CONTROLLER_IMAGE}-amd64:${TAG} \
+		${CONTROLLER_IMAGE}-arm64:${TAG}
 
 ##@ Tilt
 ## --------------------------------------
